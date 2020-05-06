@@ -10,18 +10,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static java.lang.Thread.sleep;
-
 public class Hoofdscherm extends Application{
-    private static Scene defaultScene;
-    private static BorderPane layout;
-    private static LeftScreen leftScreen;
-    private static CenterScreen centerScreen;
     private static Stage primaryStage;
     private static Scene loginScene;
     private static Scene registrationScene;
-    private static Parent registrationScreen;
-    private static Parent loginScreen;
 
     @Override
     public void start(Stage primaryStage) {
@@ -38,17 +30,17 @@ public class Hoofdscherm extends Application{
     public static void openApplication() {
         primaryStage.hide();
 
-        layout = new BorderPane();
+        BorderPane layout = new BorderPane();
 
-        leftScreen = new LeftScreen();
+        LeftScreen leftScreen = new LeftScreen();
         layout.setLeft(leftScreen.getLeftPane());
 
-        centerScreen = new CenterScreen(leftScreen);
+        CenterScreen centerScreen = new CenterScreen(leftScreen);
         layout.setCenter(centerScreen.getCenterPane());
 
         leftScreen.setCenterScreen(centerScreen);
 
-        defaultScene = new Scene(layout, 1500, 800);
+        Scene defaultScene = new Scene(layout, 1500, 800);
         primaryStage.setScene(defaultScene);
 
         primaryStage.show();
@@ -79,7 +71,7 @@ public class Hoofdscherm extends Application{
 
     public void buildRegistration() {
         try {
-            registrationScreen = FXMLLoader.load(getClass().getResource("../User/Registration.fxml"));
+            Parent registrationScreen = FXMLLoader.load(getClass().getResource("../User/Registration.fxml"));
             registrationScene = new Scene(registrationScreen, 400, 400);
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,7 +80,7 @@ public class Hoofdscherm extends Application{
 
     public void buildLogin() {
         try {
-            loginScreen = FXMLLoader.load(getClass().getResource("../User/Login.fxml"));
+            Parent loginScreen = FXMLLoader.load(getClass().getResource("../User/Login.fxml"));
             loginScene = new Scene(loginScreen, 400, 400);
         } catch (IOException e) {
             e.printStackTrace();

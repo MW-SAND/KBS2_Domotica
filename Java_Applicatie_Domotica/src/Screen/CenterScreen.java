@@ -5,23 +5,19 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 
-import java.util.ArrayList;
-
 public class CenterScreen {
-    private LeftScreen leftScreen;
 
     private BorderPane centerPane;
     private GraphPane graphPane;
     private PreferencePane prefPane;
 
     public CenterScreen(LeftScreen leftScreen) {
-        this.leftScreen = leftScreen;
 
         centerPane = new BorderPane();
         centerPane.setMinSize(1200, 800);
 
         graphPane = new GraphPane();
-        prefPane = new PreferencePane(this.leftScreen);
+        prefPane = new PreferencePane(leftScreen);
 
         centerPane.setCenter(prefPane.getPane());
 

@@ -1,34 +1,24 @@
 package Screen;
 
 import Communication.Database;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 public class Graph {
-    private NumberAxis xAxis;
-    private NumberAxis yAxis;
     private LineChart<Number, Number> lineChart;
-    private XYChart.Series<Number, Number> serie;
+    private XYChart.Series serie;
 
     public Graph(ArrayList<ArrayList<String>> data, String grootheid) {
         int dataSize = data.size();
 
-        xAxis = new NumberAxis();
-        yAxis = new NumberAxis();
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
         lineChart = new LineChart<>(xAxis, yAxis);
 
         xAxis.setLabel("Aantal dagen");
@@ -48,11 +38,11 @@ public class Graph {
         double numberOfMeasurements = 0;
         double dayTotal = 0;
 
-        for (int i = 0; i < dataSize; i++) {
-            if (data.get(i).get(1).equals(grootheid)) {
+        for (ArrayList<String> datum : data) {
+            if (datum.get(1).equals(grootheid)) {
                 try {
-                    double waarde = Double.valueOf(data.get(i).get(0));
-                    double day = getDateValue(data.get(i).get(2), lowestDate);
+                    double waarde = Double.parseDouble(datum.get(0));
+                    double day = getDateValue(datum.get(2), lowestDate);
                     if (day > (step * numberOfSteps)) {
                         double dayAverage = dayTotal / numberOfMeasurements;
                         double waardeAverage = averageTotal / numberOfMeasurements;
@@ -99,8 +89,7 @@ public class Graph {
         Date dateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(stringDate);
         long longDate = dateDate.getTime();
 
-        double doubleDate = (double) (longDate - lowestDate) / (1000*60*60*24);
-        return doubleDate;
+        return (double) (longDate - lowestDate) / (1000*60*60*24);
     }
 
 

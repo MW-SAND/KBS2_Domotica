@@ -10,7 +10,7 @@ public class Database {
     private static Connection connection;
 
     public static ArrayList<ArrayList<String>> executeQuery(String query) {
-        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
 
         try {
             Connection conn = getConnection();
@@ -34,7 +34,7 @@ public class Database {
 
             resultSet.close();
         } catch (SQLException ex) {
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -50,7 +50,7 @@ public class Database {
             Statement statement =  conn.createStatement();
             result = statement.executeUpdate(query);
         } catch (SQLException ex) {
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -76,7 +76,7 @@ public class Database {
                 connection.close();
             }
         } catch (SQLException ex) {
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
         }
 
     }

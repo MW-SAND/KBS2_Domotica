@@ -8,11 +8,6 @@ public class Meting {
         this.naam = naam;
     }
 
-    public Meting(String naam, float waarde) {
-        this.naam = naam;
-        this.waarde = waarde;
-    }
-
     public void setWaarde(float waarde) {
         this.waarde = waarde;
     }

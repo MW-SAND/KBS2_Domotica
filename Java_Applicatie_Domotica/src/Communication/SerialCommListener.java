@@ -7,7 +7,6 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Random;
 
 import static java.lang.Thread.sleep;
 
@@ -42,7 +41,6 @@ public class SerialCommListener {
             public void serialEvent(SerialPortEvent event) {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                     return;
-                byte[] newData = new byte[serialport.bytesAvailable()];
 
                 try {
                     readData();

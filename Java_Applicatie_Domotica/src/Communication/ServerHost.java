@@ -3,6 +3,7 @@ package Communication;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ServerHost {
     private static ServerSocket serverSocket;
@@ -47,17 +48,15 @@ public class ServerHost {
         out.flush();
     }
 
-    public static ArrayList<Meting> getMeasurements(ArrayList<Meting> measurements) throws IOException, NullPointerException {
+    public static void getMeasurements(ArrayList<Meting> measurements) throws IOException, NullPointerException {
         write("gt");
-        measurements.get(0).setWaarde(Float.valueOf(read()));
+        measurements.get(0).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
 
         write("gh");
-        measurements.get(1).setWaarde(Float.valueOf(read()));
+        measurements.get(1).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
 
         write("gp");
-        measurements.get(2).setWaarde(Float.valueOf(read()));
-
-        return measurements;
+        measurements.get(2).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
     }
 
     public static void stop() throws IOException {

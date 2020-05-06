@@ -55,7 +55,7 @@ public class Communication extends Thread {
     public void updateMeasurements() {
         try {
             serialComm.writeData("gb");
-            measurements = ServerHost.getMeasurements(measurements);
+            ServerHost.getMeasurements(measurements);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException npe) {
@@ -69,30 +69,28 @@ public class Communication extends Thread {
     }
 
     private void createConnection() {
-        ServerHost server = new ServerHost();
-
         try {
-            server.start(6369);
+            ServerHost.start(6369);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void setBrightness(String brightness) {
-        measurements.get(3).setWaarde(Float.valueOf(brightness));
+        measurements.get(3).setWaarde(Float.parseFloat(brightness));
     }
 
     public String buildQuery() {
-        String query = "INSERT INTO metingen (waarde, grootheid) VALUES ";
+        StringBuilder query = new StringBuilder("INSERT INTO metingen (waarde, grootheid) VALUES ");
 
         for (int i = 0; i < 4; i++) {
             String naam = measurements.get(i).getNaam();
             float waarde = measurements.get(i).getWaarde();
 
             if (waarde != 0) {
-                if (i > 0) query += ", ";
+                if (i > 0) query.append(", ");
 
-                query += "(" + waarde + ", '" + naam + "')";
+                query.append("(").append(waarde).append(", '").append(naam).append("')");
             }
         }
 

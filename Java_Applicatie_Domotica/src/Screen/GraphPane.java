@@ -14,12 +14,8 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 
 public class GraphPane implements EventHandler<ActionEvent> {
-    private Graph graph;
     private BorderPane borderPane;
     private HBox menu;
-    private Button returnButton;
-    private Text titel;
-    private ToggleGroup grootheden;
     private ToggleButton temperatuur;
     private ToggleButton luchtvochtigheid;
     private ToggleButton luchtdruk;
@@ -36,10 +32,10 @@ public class GraphPane implements EventHandler<ActionEvent> {
     public void createMenu() {
         menu = new HBox();
 
-        returnButton = new Button("<");
-        titel = new Text("Metingen");
+        Button returnButton = new Button("<");
+        Text titel = new Text("Metingen");
 
-        grootheden = new ToggleGroup();
+        ToggleGroup grootheden = new ToggleGroup();
 
         temperatuur = new ToggleButton("Temperatuur");
         luchtvochtigheid = new ToggleButton("Luchtvochtigheid");
@@ -65,7 +61,7 @@ public class GraphPane implements EventHandler<ActionEvent> {
 
     public void newGraph(String grootheid) {
         ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT waarde, grootheid, datum FROM metingen");
-        graph = new Graph(result, grootheid);
+        Graph graph = new Graph(result, grootheid);
         borderPane.setCenter(graph.getLineChart());
 
         graph.addSerie();

@@ -1,18 +1,17 @@
 package General;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Methods {
-    public static String hasher(String string) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        byte[] bytesPassword = new byte[0];
-        MessageDigest md = null;
+    public static String hasher(String string) throws NoSuchAlgorithmException {
+        byte[] bytesPassword;
+        MessageDigest md;
 
-        bytesPassword = string.getBytes("UTF-8");
+        bytesPassword = string.getBytes(StandardCharsets.UTF_8);
         md = MessageDigest.getInstance("MD5");
         byte[] hashedPassword = md.digest(bytesPassword);
-        String returnPassword = new String(hashedPassword);
-        return returnPassword;
+        return new String(hashedPassword);
     }
 }

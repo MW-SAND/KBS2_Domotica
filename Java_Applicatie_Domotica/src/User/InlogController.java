@@ -44,8 +44,6 @@ public class InlogController {
         try {
             password = Methods.hasher(password.trim());
             result = Database.executeQuery("SELECT id FROM account WHERE gebruikersnaam = '" + userName + "' AND wachtwoord = '" + password + "';");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }

@@ -39,8 +39,6 @@ public class RegistrationController {
             } else {
                 return;
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

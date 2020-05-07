@@ -19,7 +19,7 @@ public class RegistrationController {
     private TextField tfError;
 
     public void toLogin() {
-        Hoofdscherm.showLogin();
+        Hoofdscherm.showLogin(false);
     }
 
     public void register() {
@@ -35,7 +35,7 @@ public class RegistrationController {
             int resultaat = Database.executeUpdate("INSERT INTO account (gebruikersnaam, wachtwoord) VALUES ('" + userName + "', '" + password + "');");
 
             if (resultaat == 1) {
-                Hoofdscherm.showLogin();
+                Hoofdscherm.showLogin(false);
             } else {
                 return;
             }

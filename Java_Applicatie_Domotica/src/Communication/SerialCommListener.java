@@ -26,8 +26,6 @@ public class SerialCommListener {
         serialport.setBaudRate(9600);
         serialport.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
 
-        System.out.println(serialport.isOpen());
-
         inputStream = serialport.getInputStream();
         outputStream = serialport.getOutputStream();
 
@@ -59,9 +57,6 @@ public class SerialCommListener {
             e.printStackTrace();
         }
 
-    /*    byte[] newData = new byte[serialport.bytesAvailable()];
-        int numRead = serialport.readBytes(newData, newData.length);
-        System.out.println("Read " + numRead + " bytes."); */
         byte[] newDataB = new byte[5];
         inputStream.read(newDataB, 0, 5);
 
@@ -72,5 +67,12 @@ public class SerialCommListener {
     public void writeData(String message) throws IOException {
         outputStream.write(message.getBytes());
         outputStream.flush();
+    }
+
+    public void closePort() throws IOException {
+        serialport.closePort();
+        outputStream.flush();
+        outputStream.close();
+        inputStream.close();
     }
 }

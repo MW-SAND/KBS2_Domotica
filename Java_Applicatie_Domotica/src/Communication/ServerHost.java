@@ -13,11 +13,16 @@ public class ServerHost {
 
     public static void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        clientSocket = serverSocket.accept();
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        System.out.println(clientSocket.getLocalPort() + " " + clientSocket.getInetAddress());
+        try {
+            clientSocket = serverSocket.accept();
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            System.out.println(clientSocket.getLocalPort() + " " + clientSocket.getInetAddress());
+        } catch (SocketException se) {
+            System.out.println(se.getMessage());
+        }
     }
 
     public static String read() throws IOException {
@@ -31,7 +36,7 @@ public class ServerHost {
             if (message != null) {
 
                 if (message.equals("exit")) {
-                    stop();
+                    stop(true);
                     return null;
                 }
 
@@ -59,12 +64,12 @@ public class ServerHost {
         measurements.get(2).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
     }
 
-    public static void stop() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
-        serverSocket.close();
+    public static void stop(boolean start) throws IOException, NullPointerException {
+        if (in != null) in.close();
+        if (out != null) out.close();
+        if (clientSocket != null) clientSocket.close();
+        if (serverSocket != null) serverSocket.close();
 
-        start(6369);
+        if (start == true) start(6369);
     }
 }

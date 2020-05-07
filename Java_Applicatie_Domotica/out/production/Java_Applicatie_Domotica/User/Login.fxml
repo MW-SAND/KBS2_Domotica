@@ -20,6 +20,7 @@
             <Font size="24.0" />
          </font>
       </Text>
+      <Text fx:id="tError" fill="#f23333" layoutX="62.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="158.13671875" />
    </children>
    <cursor>
       <Cursor fx:constant="DEFAULT" />

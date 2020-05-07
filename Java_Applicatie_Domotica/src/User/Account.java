@@ -8,6 +8,8 @@ public class Account {
     private static int accountid;
     private static float lichtVK;
     private static float temperatureVK;
+    private static String username;
+    private static String password;
 
     public static void setAccountid(int accountid) {
         Account.accountid = accountid;
@@ -48,5 +50,18 @@ public class Account {
         } catch (IndexOutOfBoundsException ioobe) {
             System.out.println(ioobe.getMessage());
         }
+    }
+
+    public static void setIdentity(String username, String password) {
+        Account.username = username;
+        Account.password = password;
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static String getPassword() {
+        return password;
     }
 }

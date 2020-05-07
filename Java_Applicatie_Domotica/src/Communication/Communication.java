@@ -12,6 +12,7 @@ public class Communication extends Thread {
     private SerialCommListener serialComm;
     private boolean verlichting;
     private boolean verwarming;
+    private boolean running;
 
     public Communication(LeftScreen screen) {
         this.screen = screen;
@@ -23,6 +24,7 @@ public class Communication extends Thread {
 
         verwarming = false;
         verlichting = false;
+        running = true;
     }
 
     public void run() {
@@ -30,7 +32,7 @@ public class Communication extends Thread {
 
         serialComm = new SerialCommListener(this);
 
-        while (true) {
+        while (running) {
             updateMeasurements();
 
             screen.showMeasurements(measurements);
@@ -61,7 +63,7 @@ public class Communication extends Thread {
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             try {
-                ServerHost.stop();
+                ServerHost.stop(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -130,5 +132,25 @@ public class Communication extends Thread {
         }
 
         screen.showSystemStatus(verwarming, verlichting);
+    }
+
+    public void closeConnections() {
+        try {
+            ServerHost.stop(false);
+            if (serialComm != null) serialComm.closePort();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void terminate() {
+        running = false;
+
+        try {
+            sleep(500);
+            closeConnections();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

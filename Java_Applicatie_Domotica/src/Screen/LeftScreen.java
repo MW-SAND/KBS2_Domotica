@@ -39,6 +39,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
 
     private Button showMetingen;
     private Button showPref;
+    private Button logout;
 
 
     public LeftScreen() {
@@ -123,6 +124,10 @@ public class LeftScreen implements EventHandler<ActionEvent> {
 
         LeftPane.add(showMetingen, 1, 8);
         LeftPane.add(showPref, 1, 4);
+
+        logout = new Button("uitloggen");
+        logout.setOnAction(this);
+        LeftPane.add(logout, 0, 13);
     }
 
     public GridPane getLeftPane() {
@@ -158,6 +163,9 @@ public class LeftScreen implements EventHandler<ActionEvent> {
             centerScreen.showPane("Voorkeuren");
         } else if (actionEvent.getSource() == showMetingen) {
             centerScreen.showPane("Metingen");
+        } else if (actionEvent.getSource() == logout) {
+            Hoofdscherm.closeConnections();
+            Hoofdscherm.showLogin(true);
         }
     }
 }

@@ -1,6 +1,7 @@
 package Screen;
 
 import Communication.Communication;
+import User.InlogController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +15,8 @@ public class Hoofdscherm extends Application{
     private static Stage primaryStage;
     private static Scene loginScene;
     private static Scene registrationScene;
+    private static InlogController inlogController;
+    private static Communication communicator;
 
     @Override
     public void start(Stage primaryStage) {
@@ -24,7 +27,7 @@ public class Hoofdscherm extends Application{
 
         Hoofdscherm.primaryStage = primaryStage;
 
-        showLogin();
+        showLogin(false);
     }
 
     public static void openApplication() {
@@ -45,7 +48,7 @@ public class Hoofdscherm extends Application{
 
         primaryStage.show();
 
-        Communication communicator = new Communication(leftScreen);
+        communicator = new Communication(leftScreen);
         communicator.start();
     }
 
@@ -59,9 +62,10 @@ public class Hoofdscherm extends Application{
         }
     }
 
-    public static void showLogin() {
+    public static void showLogin(boolean logout) {
         try {
             primaryStage.hide();
+            if (logout == true) inlogController.setIdentity();
             primaryStage.setScene(loginScene);
             primaryStage.show();
         } catch (Exception e) {
@@ -85,6 +89,13 @@ public class Hoofdscherm extends Application{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void setInlogController(InlogController inlogController) {
+        Hoofdscherm.inlogController = inlogController;
+    }
+
+    public static void closeConnections() {
+        communicator.terminate();
     }
 }

@@ -17,7 +17,7 @@ public class Communicator extends Thread {
 
     public Communicator(LeftScreen screen) {
         this.screen = screen;
-        measurements = new ArrayList<Meting>();
+        measurements = new ArrayList<>();
         measurements.add(new Meting("temperature"));
         measurements.add(new Meting("humidity"));
         measurements.add(new Meting("pressure"));

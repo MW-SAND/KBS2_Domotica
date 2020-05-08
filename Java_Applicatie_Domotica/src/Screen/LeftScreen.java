@@ -1,6 +1,7 @@
 package Screen;
 
 import Communication.Communicator;
+import Communication.Database;
 import Communication.Meting;
 import User.Account;
 import javafx.event.ActionEvent;
@@ -94,6 +95,8 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         tfTemperaturePreferenceTitle = new Text("Temperatuur");
         tfLightPreferenceTitle = new Text("Licht");
 
+        Account.getPref();
+
         tfTemperaturePreferenceSize = new Text(String.valueOf(Account.getTemperatureVK()));
         tfLightPreferenceSize = new Text(String.valueOf(Account.getLichtVK()));
 
@@ -173,7 +176,12 @@ public class LeftScreen implements EventHandler<ActionEvent> {
             centerScreen.showPane("Metingen");
         } else if (actionEvent.getSource() == logout) {
             communicator.terminate();
-            domApplication.showLogin(true);
+            Database.executeUpdate("UPDATE account SET active=0 WHERE id=" + Account.getAccountid() + ";");
+            domApplication.showLogin();
         }
+    }
+
+    public Communicator getCommunicator() {
+        return communicator;
     }
 }

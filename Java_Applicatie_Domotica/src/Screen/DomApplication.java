@@ -1,16 +1,21 @@
 package Screen;
 
+import Communication.Database;
+import User.Account;
 import User.InlogController;
 import User.RegistrationController;
 import javafx.application.Application;
-import javafx.fxml.FXML;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DomApplication extends Application{
     private Stage primaryStage;
@@ -25,18 +30,31 @@ public class DomApplication extends Application{
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                leftScreen.getCommunicator().terminate();
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+
         primaryStage.setTitle("Domotica Systeem");
 
         buildLogin();
         buildRegistration();
 
-        this.primaryStage = primaryStage;
+        boolean activeUser = checkActiveUsers();
 
-        showLogin(false);
+        if (activeUser) openApplication();
+        else showLogin();
     }
 
     public void openApplication() {
         primaryStage.hide();
+        primaryStage.setTitle("Domotica Systeem: " + Account.getUsername());
 
         BorderPane layout = new BorderPane();
 
@@ -64,10 +82,9 @@ public class DomApplication extends Application{
         }
     }
 
-    public void showLogin(boolean logout) {
+    public void showLogin() {
         try {
             primaryStage.hide();
-            if (logout == true) inlogController.setIdentity();
             primaryStage.setScene(loginScene);
             primaryStage.show();
         } catch (Exception e) {
@@ -101,5 +118,17 @@ public class DomApplication extends Application{
 
     public LeftScreen getLeftScreen() {
         return leftScreen;
+    }
+
+    public boolean checkActiveUsers() {
+        ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT id, gebruikersnaam FROM account WHERE active=1");
+
+        try {
+            Account.setAccountid(Integer.valueOf(result.get(0).get(0)));
+            Account.setIdentity(result.get(0).get(1));
+            return true;
+        } catch (IndexOutOfBoundsException ioobe) {
+            return false;
+        }
     }
 }

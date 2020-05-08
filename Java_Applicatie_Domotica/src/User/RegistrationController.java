@@ -4,13 +4,10 @@ import Communication.Database;
 import General.Methods;
 import Screen.DomApplication;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class RegistrationController {
     private DomApplication domApplication;
@@ -23,7 +20,7 @@ public class RegistrationController {
 
 
     public void toLogin() {
-        domApplication.showLogin(false);
+        domApplication.showLogin();
     }
 
     public void register() {
@@ -39,7 +36,7 @@ public class RegistrationController {
             int resultaat = Database.executeUpdate("INSERT INTO account (gebruikersnaam, wachtwoord) VALUES ('" + userName + "', '" + password + "');");
 
             if (resultaat == 1) {
-                domApplication.showLogin(false);
+                domApplication.showLogin();
             } else {
                 return;
             }

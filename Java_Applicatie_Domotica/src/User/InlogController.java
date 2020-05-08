@@ -25,6 +25,7 @@ public class InlogController {
 
             if (userExists) {
                 domApplication.openApplication();
+                Database.executeUpdate("UPDATE account SET active=1 WHERE id=" + Account.getAccountid() + ";");
             } else {
                 tError.setText("Er is iets fout gegaan!");
             }
@@ -47,17 +48,12 @@ public class InlogController {
         try {
             Account.setAccountid(Integer.parseInt(result.get(0).get(0)));
             Account.getPref();
-            Account.setIdentity(userName, password);
+            Account.setIdentity(userName);
             return true;
         } catch (IndexOutOfBoundsException ioobe) {
             System.out.println(ioobe.getMessage());
             return false;
         }
-    }
-
-    public void setIdentity() {
-        tfUserName.setText(Account.getUsername());
-        tfPassword.setText(Account.getPassword());
     }
 
     public void setDomApplication(DomApplication domApplication) {

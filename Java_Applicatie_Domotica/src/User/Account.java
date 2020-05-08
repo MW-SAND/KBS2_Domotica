@@ -9,10 +9,13 @@ public class Account {
     private static float lichtVK;
     private static float temperatureVK;
     private static String username;
-    private static String password;
 
     public static void setAccountid(int accountid) {
         Account.accountid = accountid;
+    }
+
+    public static int getAccountid() {
+        return accountid;
     }
 
     public static float getLichtVK() {
@@ -52,16 +55,11 @@ public class Account {
         }
     }
 
-    public static void setIdentity(String username, String password) {
+    public static void setIdentity(String username) {
         Account.username = username;
-        Account.password = password;
     }
 
     public static String getUsername() {
         return username;
-    }
-
-    public static String getPassword() {
-        return password;
     }
 }

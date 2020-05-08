@@ -1,5 +1,6 @@
 package Screen;
 
+import Communication.Communicator;
 import Communication.Meting;
 import User.Account;
 import javafx.event.ActionEvent;
@@ -13,7 +14,9 @@ import java.util.ArrayList;
 
 public class LeftScreen implements EventHandler<ActionEvent> {
     private GridPane LeftPane;
+    private DomApplication domApplication;
     private CenterScreen centerScreen;
+    private Communicator communicator;
 
     private Text tfSystemTitle;
     private Text tfHeaterTitle;
@@ -42,7 +45,12 @@ public class LeftScreen implements EventHandler<ActionEvent> {
     private Button logout;
 
 
-    public LeftScreen() {
+    public LeftScreen(DomApplication domApplication) {
+        this.domApplication = domApplication;
+
+        communicator = new Communicator(this);
+        communicator.start();
+
         LeftPane = new GridPane();
         LeftPane.setMinSize(300, 800);
         LeftPane.setPadding(new Insets(10, 10, 10, 10));
@@ -164,8 +172,8 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         } else if (actionEvent.getSource() == showMetingen) {
             centerScreen.showPane("Metingen");
         } else if (actionEvent.getSource() == logout) {
-            Hoofdscherm.closeConnections();
-            Hoofdscherm.showLogin(true);
+            communicator.terminate();
+            domApplication.showLogin(true);
         }
     }
 }

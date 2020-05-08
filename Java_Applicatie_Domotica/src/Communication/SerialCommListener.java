@@ -16,9 +16,9 @@ public class SerialCommListener {
     private InputStream inputStream;
     private OutputStream outputStream;
 
-    private Communication communicator;
+    private Communicator communicator;
 
-    public SerialCommListener(Communication communicator) {
+    public SerialCommListener(Communicator communicator) {
         this.communicator = communicator;
 
         serialport = SerialPort.getCommPort("COM3");

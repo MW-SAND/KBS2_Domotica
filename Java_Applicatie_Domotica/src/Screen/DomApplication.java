@@ -1,8 +1,9 @@
 package Screen;
 
-import Communication.Communication;
 import User.InlogController;
+import User.RegistrationController;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,12 +12,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Hoofdscherm extends Application{
-    private static Stage primaryStage;
-    private static Scene loginScene;
-    private static Scene registrationScene;
-    private static InlogController inlogController;
-    private static Communication communicator;
+public class DomApplication extends Application{
+    private Stage primaryStage;
+    private Scene loginScene;
+    private Scene registrationScene;
+    private InlogController inlogController;
+    private RegistrationController registrationController;
+    private FXMLLoader loader;
+
+    private LeftScreen leftScreen;
+    private CenterScreen centerScreen;
 
     @Override
     public void start(Stage primaryStage) {
@@ -25,20 +30,20 @@ public class Hoofdscherm extends Application{
         buildLogin();
         buildRegistration();
 
-        Hoofdscherm.primaryStage = primaryStage;
+        this.primaryStage = primaryStage;
 
         showLogin(false);
     }
 
-    public static void openApplication() {
+    public void openApplication() {
         primaryStage.hide();
 
         BorderPane layout = new BorderPane();
 
-        LeftScreen leftScreen = new LeftScreen();
+        leftScreen = new LeftScreen(this);
         layout.setLeft(leftScreen.getLeftPane());
 
-        CenterScreen centerScreen = new CenterScreen(leftScreen);
+        centerScreen = new CenterScreen(this);
         layout.setCenter(centerScreen.getCenterPane());
 
         leftScreen.setCenterScreen(centerScreen);
@@ -47,12 +52,9 @@ public class Hoofdscherm extends Application{
         primaryStage.setScene(defaultScene);
 
         primaryStage.show();
-
-        communicator = new Communication(leftScreen);
-        communicator.start();
     }
 
-    public static void showRegistration() {
+    public void showRegistration() {
         try {
             primaryStage.hide();
             primaryStage.setScene(registrationScene);
@@ -62,7 +64,7 @@ public class Hoofdscherm extends Application{
         }
     }
 
-    public static void showLogin(boolean logout) {
+    public void showLogin(boolean logout) {
         try {
             primaryStage.hide();
             if (logout == true) inlogController.setIdentity();
@@ -75,7 +77,10 @@ public class Hoofdscherm extends Application{
 
     public void buildRegistration() {
         try {
-            Parent registrationScreen = FXMLLoader.load(getClass().getResource("../User/Registration.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../User/Registration.fxml"));
+            Parent registrationScreen = loader.load();
+            registrationController = loader.getController();
+            registrationController.setDomApplication(this);
             registrationScene = new Scene(registrationScreen, 400, 400);
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,18 +89,17 @@ public class Hoofdscherm extends Application{
 
     public void buildLogin() {
         try {
-            Parent loginScreen = FXMLLoader.load(getClass().getResource("../User/Login.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../User/Login.fxml"));
+            Parent loginScreen = loader.load();
+            inlogController = loader.getController();
+            inlogController.setDomApplication(this);
             loginScene = new Scene(loginScreen, 400, 400);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setInlogController(InlogController inlogController) {
-        Hoofdscherm.inlogController = inlogController;
-    }
-
-    public static void closeConnections() {
-        communicator.terminate();
+    public LeftScreen getLeftScreen() {
+        return leftScreen;
     }
 }

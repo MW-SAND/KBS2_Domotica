@@ -2,15 +2,18 @@ package User;
 
 import Communication.Database;
 import General.Methods;
-import Screen.Hoofdscherm;
+import Screen.DomApplication;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class RegistrationController {
+    private DomApplication domApplication;
     @FXML
     private TextField tfUserName;
     @FXML
@@ -18,8 +21,9 @@ public class RegistrationController {
     @FXML
     private TextField tfError;
 
+
     public void toLogin() {
-        Hoofdscherm.showLogin(false);
+        domApplication.showLogin(false);
     }
 
     public void register() {
@@ -35,7 +39,7 @@ public class RegistrationController {
             int resultaat = Database.executeUpdate("INSERT INTO account (gebruikersnaam, wachtwoord) VALUES ('" + userName + "', '" + password + "');");
 
             if (resultaat == 1) {
-                Hoofdscherm.showLogin(false);
+                domApplication.showLogin(false);
             } else {
                 return;
             }
@@ -53,5 +57,9 @@ public class RegistrationController {
         } else {
             return false;
         }
+    }
+
+    public void setDomApplication(DomApplication domApplication) {
+        this.domApplication = domApplication;
     }
 }

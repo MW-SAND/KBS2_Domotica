@@ -6,18 +6,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 
 public class CenterScreen {
-
     private BorderPane centerPane;
     private GraphPane graphPane;
     private PreferencePane prefPane;
 
-    public CenterScreen(LeftScreen leftScreen) {
-
+    public CenterScreen(DomApplication domApplication) {
         centerPane = new BorderPane();
         centerPane.setMinSize(1200, 800);
 
         graphPane = new GraphPane();
-        prefPane = new PreferencePane(leftScreen);
+        prefPane = new PreferencePane(this, domApplication);
 
         centerPane.setCenter(prefPane.getPane());
 

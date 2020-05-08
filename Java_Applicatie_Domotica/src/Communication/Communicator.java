@@ -6,15 +6,16 @@ import User.Account;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Communication extends Thread {
+public class Communicator extends Thread {
     private LeftScreen screen;
+    private TCPServer tcpServer;
     private ArrayList<Meting> measurements;
     private SerialCommListener serialComm;
     private boolean verlichting;
     private boolean verwarming;
     private boolean running;
 
-    public Communication(LeftScreen screen) {
+    public Communicator(LeftScreen screen) {
         this.screen = screen;
         measurements = new ArrayList<Meting>();
         measurements.add(new Meting("temperature"));
@@ -57,13 +58,13 @@ public class Communication extends Thread {
     public void updateMeasurements() {
         try {
             serialComm.writeData("gb");
-            ServerHost.getMeasurements(measurements);
+            tcpServer.getMeasurements(measurements);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             try {
-                ServerHost.stop(true);
+                tcpServer.stop(true);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -72,7 +73,8 @@ public class Communication extends Thread {
 
     private void createConnection() {
         try {
-            ServerHost.start(6369);
+            tcpServer = new TCPServer();
+            tcpServer.start(6369);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,28 +108,28 @@ public class Communication extends Thread {
         if (temperaturePref != 0.0) {
             if (verwarming) {
                 if (measurements.get(0).getWaarde() > temperaturePref * 1.10) {
-                    ServerHost.write("uv");
-                    System.out.println(ServerHost.read());
+                    tcpServer.write("uv");
+                    System.out.println(tcpServer.read());
                     verlichting = false;
                 }
             } else if (measurements.get(0).getWaarde() < temperaturePref) {
-                ServerHost.write("sv");
+                tcpServer.write("sv");
                 verwarming = true;
-                System.out.println(ServerHost.read());
+                System.out.println(tcpServer.read());
             }
         }
 
         if (lightPref != 0.0) {
             if (verlichting) {
                 if (measurements.get(3).getWaarde() > lightPref * 1.10) {
-                    ServerHost.write("ul");
-                    System.out.println(ServerHost.read());
+                    tcpServer.write("ul");
+                    System.out.println(tcpServer.read());
                     verlichting = false;
                 }
             } else if (measurements.get(3).getWaarde() < lightPref && measurements.get(3).getWaarde() != 0.0) {
-                ServerHost.write("sl");
+                tcpServer.write("sl");
                 verlichting = true;
-                System.out.println(ServerHost.read());
+                System.out.println(tcpServer.read());
             }
         }
 
@@ -136,7 +138,7 @@ public class Communication extends Thread {
 
     public void closeConnections() {
         try {
-            ServerHost.stop(false);
+            tcpServer.stop(false);
             if (serialComm != null) serialComm.closePort();
         } catch (IOException e) {
             e.printStackTrace();

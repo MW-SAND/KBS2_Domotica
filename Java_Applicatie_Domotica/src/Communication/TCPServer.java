@@ -5,13 +5,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ServerHost {
+public class TCPServer {
     private static ServerSocket serverSocket;
     private static Socket clientSocket;
     private static PrintWriter out;
     private static BufferedReader in;
 
-    public static void start(int port) throws IOException {
+    public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
 
         try {
@@ -25,7 +25,7 @@ public class ServerHost {
         }
     }
 
-    public static String read() throws IOException {
+    public String read() throws IOException {
         long startTime = System.nanoTime() / 1000000;
         long currentTime = System.nanoTime() / 1000000;
 
@@ -48,12 +48,12 @@ public class ServerHost {
         return null;
     }
 
-    public static void write(String message) {
+    public void write(String message) {
         out.println(message);
         out.flush();
     }
 
-    public static void getMeasurements(ArrayList<Meting> measurements) throws IOException, NullPointerException {
+    public void getMeasurements(ArrayList<Meting> measurements) throws IOException, NullPointerException {
         write("gt");
         measurements.get(0).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
 
@@ -64,7 +64,7 @@ public class ServerHost {
         measurements.get(2).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
     }
 
-    public static void stop(boolean start) throws IOException, NullPointerException {
+    public void stop(boolean start) throws IOException, NullPointerException {
         if (in != null) in.close();
         if (out != null) out.close();
         if (clientSocket != null) clientSocket.close();

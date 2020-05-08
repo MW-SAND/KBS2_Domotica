@@ -13,7 +13,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class PreferencePane implements EventHandler<ActionEvent> {
-    private LeftScreen leftScreen;
+    private CenterScreen centerScreen;
+    private DomApplication domApplication;
 
     private BorderPane borderPane;
     private HBox menu;
@@ -31,8 +32,9 @@ public class PreferencePane implements EventHandler<ActionEvent> {
     private Text explanation;
     private Text notification;
 
-    public PreferencePane(LeftScreen leftScreen) {
-        this.leftScreen = leftScreen;
+    public PreferencePane(CenterScreen centerScreen, DomApplication domApplication) {
+        this.centerScreen = centerScreen;
+        this.domApplication = domApplication;
         borderPane = new BorderPane();
 
         createMenu();
@@ -102,7 +104,7 @@ public class PreferencePane implements EventHandler<ActionEvent> {
 
                 if (geupdate) {
                     notification.setText("Wijziging is geslaagd!");
-                    leftScreen.showPreference();
+                    domApplication.getLeftScreen().showPreference();
                 } else {
                     notification.setText("Wijziging is mislukt");
                 }

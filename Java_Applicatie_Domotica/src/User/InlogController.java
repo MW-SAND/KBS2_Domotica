@@ -2,7 +2,7 @@ package User;
 
 import Communication.Database;
 import General.Methods;
-import Screen.Hoofdscherm;
+import Screen.DomApplication;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -11,27 +11,27 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class InlogController {
+    private DomApplication domApplication;
+
     @FXML
     private TextField tfUserName;
     @FXML
     private TextField tfPassword;
     @FXML
     private Text tError;
-    @FXML
 
     public void login() {
             boolean userExists = controlLogin(tfUserName.getText(), tfPassword.getText());
 
             if (userExists) {
-                Hoofdscherm.openApplication();
-                Hoofdscherm.setInlogController(this);
+                domApplication.openApplication();
             } else {
                 tError.setText("Er is iets fout gegaan!");
             }
     }
 
     public void toRegistration() {
-        Hoofdscherm.showRegistration();
+        domApplication.showRegistration();
     }
 
     public boolean controlLogin(String userName, String password) {
@@ -58,5 +58,9 @@ public class InlogController {
     public void setIdentity() {
         tfUserName.setText(Account.getUsername());
         tfPassword.setText(Account.getPassword());
+    }
+
+    public void setDomApplication(DomApplication domApplication) {
+        this.domApplication = domApplication;
     }
 }

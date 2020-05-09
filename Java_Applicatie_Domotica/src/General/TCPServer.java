@@ -12,8 +12,10 @@ public class TCPServer {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
+    private int port;
 
     public TCPServer(int port) throws IOException {
+        this.port = port;
         start(port);
     }
 
@@ -55,6 +57,7 @@ public class TCPServer {
     }
 
     public void write(String message) {
+        System.out.println(message);
         out.println(message);
         out.flush();
     }
@@ -76,7 +79,7 @@ public class TCPServer {
         if (clientSocket != null) clientSocket.close();
         if (serverSocket != null) serverSocket.close();
 
-        if (start == true) start(6369);
+        if (start == true) start(port);
     }
 
     public OutputStream getOutputStream() throws IOException {

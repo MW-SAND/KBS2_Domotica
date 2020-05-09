@@ -11,27 +11,40 @@ import java.util.ArrayList;
 public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
     private TCPServer tcpServer;
     private ArrayList<Button> buttons;
-    private boolean running = true;
+    private boolean running;
+    private boolean newMusicFile;
 
     public MusicPlayer(ArrayList<Button> buttons) {
         this.buttons = buttons;
+        running = true;
+        newMusicFile = false;
     }
 
     public void run() {
         try {
             tcpServer = new TCPServer(6370);
+            System.out.println("connected");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         while (running) {
+            if (newMusicFile == true) {
+                sendMusicFile();
+                newMusicFile = false;
+            }
 
+            try {
+                sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void sendMusicFile() {
         tcpServer.write("mf");
-        File musicFile = new File("C:\\Users\\matti\\Downloads\\Jezus Overwinnaar.wav");
+        File musicFile = new File("C:\\Users\\matti\\Downloads\\Living Hope.wav");
         byte[] musicFileArray = new byte[(int) musicFile.length()];
         tcpServer.write(String.valueOf(musicFileArray.length));
         try {
@@ -52,7 +65,7 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent actionEvent) {
         if (actionEvent.getSource() == buttons.get(0)) {
-            if (tcpServer != null) sendMusicFile();
+            newMusicFile = true;
         }
     }
 }

@@ -38,6 +38,7 @@ public class MusicPane {
 
         musicPlayer = new MusicPlayer(buttons);
         bPlay.setOnAction(musicPlayer);
+        musicPlayer.start();
     }
 
     public BorderPane getPane() {

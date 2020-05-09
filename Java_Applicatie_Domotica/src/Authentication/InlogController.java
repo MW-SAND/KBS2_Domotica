@@ -1,8 +1,8 @@
-package User;
+package Authentication;
 
-import Communication.Database;
+import General.Database;
 import General.Methods;
-import Screen.DomApplication;
+import General.DomApplication;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;

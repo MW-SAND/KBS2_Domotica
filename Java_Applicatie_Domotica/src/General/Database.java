@@ -1,4 +1,4 @@
-package Communication;
+package General;
 
 import java.sql.*;
 import java.util.ArrayList;

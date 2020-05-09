@@ -1,4 +1,6 @@
-package Communication;
+package General;
+
+import Domotica.Functionality.Meting;
 
 import java.net.*;
 import java.io.*;
@@ -10,6 +12,10 @@ public class TCPServer {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
+
+    public TCPServer(int port) throws IOException {
+        start(port);
+    }
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);

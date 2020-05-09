@@ -1,9 +1,9 @@
-package Screen;
+package General;
 
-import Communication.Database;
-import User.Account;
-import User.InlogController;
-import User.RegistrationController;
+import Authentication.Account;
+import Authentication.InlogController;
+import Authentication.RegistrationController;
+import Domotica.GUI.LeftScreen;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -94,7 +94,7 @@ public class DomApplication extends Application{
 
     public void buildRegistration() {
         try {
-            loader = new FXMLLoader(getClass().getResource("../User/Registration.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../Authentication/Registration.fxml"));
             Parent registrationScreen = loader.load();
             registrationController = loader.getController();
             registrationController.setDomApplication(this);
@@ -106,7 +106,7 @@ public class DomApplication extends Application{
 
     public void buildLogin() {
         try {
-            loader = new FXMLLoader(getClass().getResource("../User/Login.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../Authentication/Login.fxml"));
             Parent loginScreen = loader.load();
             inlogController = loader.getController();
             inlogController.setDomApplication(this);

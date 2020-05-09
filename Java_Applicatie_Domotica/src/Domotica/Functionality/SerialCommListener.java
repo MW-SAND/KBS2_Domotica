@@ -1,5 +1,6 @@
-package Communication;
+package Domotica.Functionality;
 
+import Domotica.Functionality.Communicator;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;

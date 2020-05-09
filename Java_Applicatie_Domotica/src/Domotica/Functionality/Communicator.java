@@ -1,7 +1,9 @@
-package Communication;
+package Domotica.Functionality;
 
-import Screen.LeftScreen;
-import User.Account;
+import General.TCPServer;
+import General.Database;
+import Domotica.GUI.LeftScreen;
+import Authentication.Account;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,8 +17,6 @@ public class Communicator extends Thread {
     private boolean verwarming;
     private boolean running;
 
-    private boolean hasMusic;
-
     public Communicator(LeftScreen screen) {
         this.screen = screen;
         measurements = new ArrayList<>();
@@ -28,11 +28,14 @@ public class Communicator extends Thread {
         verwarming = false;
         verlichting = false;
         running = true;
-        hasMusic = true;
     }
 
     public void run() {
-        createConnection();
+        try {
+            tcpServer = new TCPServer(6369);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         serialComm = new SerialCommListener(this);
 
@@ -50,16 +53,12 @@ public class Communicator extends Thread {
                 e.printStackTrace();
             }
 
-            if (hasMusic) {
-                sendMusicFile();
-                hasMusic = false;
-            } else {
-                try {
-                    sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -76,15 +75,6 @@ public class Communicator extends Thread {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
-    }
-
-    private void createConnection() {
-        try {
-            tcpServer = new TCPServer();
-            tcpServer.start(6369);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -144,29 +134,9 @@ public class Communicator extends Thread {
         screen.showSystemStatus(verwarming, verlichting);
     }
 
-    public void sendMusicFile() {
-        tcpServer.write("mf");
-        File musicFile = new File("C:\\Users\\matti\\Downloads\\Jezus Overwinnaar.wav");
-        byte[] musicFileArray = new byte[(int) musicFile.length()];
-        tcpServer.write(String.valueOf(musicFileArray.length));
-        try {
-            FileInputStream fis = new FileInputStream(musicFile);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            bis.read(musicFileArray, 0, musicFileArray.length);
-            OutputStream out = tcpServer.getOutputStream();
-            out.write(musicFileArray, 0, musicFileArray.length);
-            out.flush();
-            System.out.println(tcpServer.read());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void closeConnections() {
         try {
-            tcpServer.stop(false);
+            if (tcpServer != null) tcpServer.stop(false);
             if (serialComm != null) serialComm.closePort();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,9 +1,11 @@
-package Screen;
+package Domotica.GUI;
 
-import Communication.Communicator;
-import Communication.Database;
-import Communication.Meting;
-import User.Account;
+import Domotica.Functionality.Communicator;
+import General.CenterScreen;
+import General.Database;
+import Domotica.Functionality.Meting;
+import Authentication.Account;
+import General.DomApplication;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

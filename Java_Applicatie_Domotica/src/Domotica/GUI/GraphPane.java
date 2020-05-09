@@ -1,6 +1,7 @@
-package Screen;
+package Domotica.GUI;
 
-import Communication.Database;
+import Domotica.Functionality.Graph;
+import General.Database;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

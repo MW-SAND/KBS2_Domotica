@@ -1,6 +1,8 @@
-package Screen;
+package Domotica.GUI;
 
-import User.Account;
+import Authentication.Account;
+import General.CenterScreen;
+import General.DomApplication;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

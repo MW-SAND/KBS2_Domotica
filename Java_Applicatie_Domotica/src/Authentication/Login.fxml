@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="264.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="User.InlogController">
+<AnchorPane prefHeight="264.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Authentication.InlogController">
    <children>
       <Button fx:id="bInloggen" layoutX="221.0" layoutY="195.0" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="105.0" text="Inloggen" />
       <Button fx:id="bNewAccount" layoutX="58.0" layoutY="195.0" mnemonicParsing="false" onAction="#toRegistration" text="Account aanmaken" />

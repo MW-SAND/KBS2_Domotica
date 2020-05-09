@@ -1,4 +1,4 @@
-import Screen.DomApplication;
+import General.DomApplication;
 import javafx.application.Application;
 
 public class Main {

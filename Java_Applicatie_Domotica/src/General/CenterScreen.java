@@ -1,5 +1,8 @@
-package Screen;
+package General;
 
+import Domotica.GUI.PreferencePane;
+import Domotica.GUI.GraphPane;
+import Music.GUI.MusicPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -9,6 +12,7 @@ public class CenterScreen {
     private BorderPane centerPane;
     private GraphPane graphPane;
     private PreferencePane prefPane;
+    private MusicPane musicPane;
 
     public CenterScreen(DomApplication domApplication) {
         centerPane = new BorderPane();
@@ -19,15 +23,8 @@ public class CenterScreen {
 
         centerPane.setCenter(prefPane.getPane());
 
-        Label bottomLabel = createLabel("BOTTOM", Paint.valueOf("ff0000"));
-        bottomLabel.setPrefSize(1200, 300);
-        centerPane.setBottom(bottomLabel);
-    }
-
-    public Label createLabel(String text, javafx.scene.paint.Paint styleColor) {
-        Label label = new Label(text);
-        label.setBackground(new Background(new BackgroundFill(styleColor, CornerRadii.EMPTY, Insets.EMPTY)));
-        return label;
+        musicPane = new MusicPane();
+        centerPane.setBottom(musicPane.getPane());
     }
 
     public BorderPane getCenterPane() {

@@ -1,6 +1,6 @@
-package User;
+package Authentication;
 
-import Communication.Database;
+import General.Database;
 
 import java.util.ArrayList;
 

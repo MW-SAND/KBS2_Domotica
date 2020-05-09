@@ -1,6 +1,6 @@
-package Screen;
+package Domotica.Functionality;
 
-import Communication.Database;
+import General.Database;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class TCPServer {
-    private static ServerSocket serverSocket;
-    private static Socket clientSocket;
-    private static PrintWriter out;
-    private static BufferedReader in;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
+    private PrintWriter out;
+    private BufferedReader in;
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -71,5 +71,9 @@ public class TCPServer {
         if (serverSocket != null) serverSocket.close();
 
         if (start == true) start(6369);
+    }
+
+    public OutputStream getOutputStream() throws IOException {
+        return clientSocket.getOutputStream();
     }
 }

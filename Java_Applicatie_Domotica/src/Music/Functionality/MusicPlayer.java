@@ -44,10 +44,11 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
 
     public void sendMusicFile() {
         tcpServer.write("mf");
-        File musicFile = new File("C:\\Users\\matti\\Downloads\\Living Hope.wav");
+        File musicFile = new File("C:\\Users\\matti\\Downloads\\777intro.mp3");
         byte[] musicFileArray = new byte[(int) musicFile.length()];
         tcpServer.write(String.valueOf(musicFileArray.length));
         try {
+            System.out.println(tcpServer.read());
             FileInputStream fis = new FileInputStream(musicFile);
             BufferedInputStream bis = new BufferedInputStream(fis);
             bis.read(musicFileArray, 0, musicFileArray.length);

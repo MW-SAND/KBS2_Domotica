@@ -11,15 +11,21 @@ import java.util.ArrayList;
 public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
     private TCPServer tcpServer;
     private ArrayList<Button> buttons;
+
     private boolean running;
-    private boolean newMusicFile;
+
     private ArrayList<Song> playlist;
+    private ArrayList<Song> playedSongs;
+
     private int songIndex;
+
+    private boolean newMessage;
+    private String message;
 
     public MusicPlayer(ArrayList<Button> buttons) {
         this.buttons = buttons;
         running = true;
-        newMusicFile = false;
+        newMessage = false;
 
         songIndex = 0;
 
@@ -33,6 +39,8 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
         playlist.add(song2);
         playlist.add(song3);
         playlist.add(song4);
+
+        playedSongs = new ArrayList<>();
     }
 
     public void run() {
@@ -44,9 +52,28 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
         }
 
         while (running) {
-            if (newMusicFile == true) {
-                sendMusicFile();
-                newMusicFile = false;
+            if (newMessage == true) {
+                if (message.equals("New song")) {
+
+                } else if (message.equals("Previous song")) {
+
+                } else if (message.equals("Next song")) {
+
+                } else if (message.equals("Pause song")) {
+                    try {
+                        tcpServer.write("ps");
+                        tcpServer.read();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (message.equals("Resume song")) {
+                    try {
+                        tcpServer.write("rs");
+                        tcpServer.read();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             try {
@@ -72,10 +99,23 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
         }
     }
 
-        @Override
+    @Override
     public void handle(ActionEvent actionEvent) {
+        newMessage = true;
+
         if (actionEvent.getSource() == buttons.get(0)) {
-            newMusicFile = true;
+            message = "New song";
+
+        } else if (actionEvent.getSource() == buttons.get(1)) {
+            message = "Previous song";
+        } else if (actionEvent.getSource() == buttons.get(2)) {
+            message = "Pause song";
+        } else if (actionEvent.getSource() == buttons.get(3)) {
+            message = "Resume song";
+        } else if (actionEvent.getSource() == buttons.get(4)) {
+            message = "Next song";
+        } else {
+            message = "unknown";
         }
     }
 }

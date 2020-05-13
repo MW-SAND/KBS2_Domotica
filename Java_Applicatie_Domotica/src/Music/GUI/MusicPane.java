@@ -1,15 +1,18 @@
 package Music.GUI;
 
 import Music.Functionality.MusicPlayer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
-public class MusicPane {
-    private ArrayList<Button> buttons;
+public class MusicPane implements EventHandler<ActionEvent> {
     private Button bPlay;
     private Button bResume;
     private Button bPause;
@@ -49,25 +52,36 @@ public class MusicPane {
 
         borderPane.setCenter(centerBox);
 
-        buttons = new ArrayList<>();
-        buttons.add(bPlay);
-        buttons.add(bPrevious);
-        buttons.add(bPause);
-        buttons.add(bResume);
-        buttons.add(bNext);
+        musicPlayer = new MusicPlayer();
 
-        musicPlayer = new MusicPlayer(buttons);
-
-        bPlay.setOnAction(musicPlayer);
-        bPrevious.setOnAction(musicPlayer);
-        bPause.setOnAction(musicPlayer);
-        bResume.setOnAction(musicPlayer);
-        bNext.setOnAction(musicPlayer);
+        bPlay.setOnAction(this);
+        bPrevious.setOnAction(this);
+        bPause.setOnAction(this);
+        bResume.setOnAction(this);
+        bNext.setOnAction(this);
 
         musicPlayer.start();
     }
 
     public BorderPane getPane() {
         return borderPane;
+    }
+
+    @Override
+    public void handle(ActionEvent actionEvent) {
+        musicPlayer.setNewMessage(true);
+
+        if (actionEvent.getSource() == bPlay) {
+            musicPlayer.setMessage("New song");
+
+        } else if (actionEvent.getSource() == bPrevious) {
+            musicPlayer.setMessage("Previous song");
+        } else if (actionEvent.getSource() == bPause) {
+            musicPlayer.setMessage("Pause song");
+        } else if (actionEvent.getSource() == bResume) {
+            musicPlayer.setMessage("Resume song");
+        } else if (actionEvent.getSource() == bNext) {
+            musicPlayer.setMessage("Next song");
+        }
     }
 }

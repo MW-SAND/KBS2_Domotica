@@ -8,9 +8,8 @@ import javafx.scene.control.Button;
 import java.io.*;
 import java.util.ArrayList;
 
-public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
+public class MusicPlayer extends Thread {
     private TCPServer tcpServer;
-    private ArrayList<Button> buttons;
 
     private boolean running;
 
@@ -18,23 +17,25 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
     private ArrayList<Song> playedSongs;
 
     private int songIndex;
+    private int currentSong;
 
     private boolean newMessage;
     private String message;
 
-    public MusicPlayer(ArrayList<Button> buttons) {
-        this.buttons = buttons;
+    public MusicPlayer() {
         running = true;
         newMessage = false;
+        message = "unknown";
 
         songIndex = 0;
+        currentSong = 0;
 
         Song song1 = new Song("Dwayne Tryumf", "777 intro", 96, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\777intro.mp3");
         Song song2 = new Song("Dwayne Tryumf", "I don't pack a Matic", 249, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Matic.mp3");
         Song song3 = new Song("Lecrae", "Don't Waste Your Life", 229, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Waste.mp3");
         Song song4 = new Song("KB", "Champion", 269, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Champion.mp3");
 
-        playlist = new ArrayList<Song>();
+        playlist = new ArrayList<>();
         playlist.add(song1);
         playlist.add(song2);
         playlist.add(song3);
@@ -53,14 +54,120 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
 
         while (running) {
             if (newMessage == true) {
+                newMessage = false;
+
                 if (message.equals("New song")) {
+                    songIndex = 0;
+                    tcpServer.write("mf");
+                    sendMusicFile(playlist.get(songIndex));
+
+                    playedSongs.add(playlist.get(songIndex));
+                    currentSong = playedSongs.size() - 1;
+
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    tcpServer.write("nf");
+
+                    if (songIndex >= playlist.size() - 1) {
+                        sendMusicFile(playlist.get(0));
+                    } else {
+                        sendMusicFile(playlist.get(songIndex+1));
+                    }
 
                 } else if (message.equals("Previous song")) {
+                        if (playedSongs.size() > 0 && currentSong != 0) {
+                            tcpServer.write("mf");
+                            currentSong--;
+                            sendMusicFile(playedSongs.get(currentSong));
 
+                            try {
+                                sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            tcpServer.write("nf");
+
+                            sendMusicFile(playedSongs.get(currentSong+1));
+                        }
                 } else if (message.equals("Next song")) {
+                    if (currentSong >= playedSongs.size() - 1) {
+                        if (songIndex + 1 >= playlist.size()) {
+                            songIndex = 0;
+                        } else {
+                            songIndex++;
+                        }
+
+                        tcpServer.write("ns");
+                        currentSong++;
+                        playedSongs.add(playlist.get(songIndex));
+
+                        try {
+                            String answer = tcpServer.read();
+                            if (answer.equals("sr")) {
+                                tcpServer.write("mf");
+                                sendMusicFile(playlist.get(songIndex));
+                            }
+
+                            try {
+                                sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            tcpServer.write("nf");
+
+                            if (songIndex >= playlist.size() - 1) {
+                                sendMusicFile(playlist.get(0));
+                            } else {
+                                sendMusicFile(playlist.get(songIndex+1));
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        currentSong++;
+
+                        tcpServer.write("ns");
+
+                        try {
+                            String answer = tcpServer.read();
+                            if (answer.equals("sr")) {
+                                tcpServer.write("mf");
+                                sendMusicFile(playedSongs.get(currentSong));
+                            }
+
+                            try {
+                                sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            tcpServer.write("nf");
+
+                            if (currentSong >= playlist.size() - 1) {
+                                if (songIndex >= playlist.size()) {
+                                    sendMusicFile(playlist.get(0));
+                                } else {
+                                    sendMusicFile(playlist.get(songIndex+1));
+                                }
+                            } else {
+                                sendMusicFile(playedSongs.get(currentSong+1));
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                 } else if (message.equals("Pause song")) {
                     try {
+                        System.out.println("Pausing song...");
                         tcpServer.write("ps");
                         tcpServer.read();
                     } catch (IOException e) {
@@ -68,6 +175,7 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
                     }
                 } else if (message.equals("Resume song")) {
                     try {
+                        System.out.println("Resuming song...");
                         tcpServer.write("rs");
                         tcpServer.read();
                     } catch (IOException e) {
@@ -84,9 +192,8 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
         }
     }
 
-    public void sendMusicFile() {
-        tcpServer.write("mf");
-        byte[] musicFileArray = playlist.get(songIndex).getSongBytes();
+    public void sendMusicFile(Song song) {
+        byte[] musicFileArray = song.getSongBytes();
         tcpServer.write(String.valueOf(musicFileArray.length));
         try {
             System.out.println(tcpServer.read());
@@ -99,23 +206,11 @@ public class MusicPlayer extends Thread implements EventHandler<ActionEvent> {
         }
     }
 
-    @Override
-    public void handle(ActionEvent actionEvent) {
-        newMessage = true;
+    public void setNewMessage(boolean newMessage) {
+        this.newMessage = newMessage;
+    }
 
-        if (actionEvent.getSource() == buttons.get(0)) {
-            message = "New song";
-
-        } else if (actionEvent.getSource() == buttons.get(1)) {
-            message = "Previous song";
-        } else if (actionEvent.getSource() == buttons.get(2)) {
-            message = "Pause song";
-        } else if (actionEvent.getSource() == buttons.get(3)) {
-            message = "Resume song";
-        } else if (actionEvent.getSource() == buttons.get(4)) {
-            message = "Next song";
-        } else {
-            message = "unknown";
-        }
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

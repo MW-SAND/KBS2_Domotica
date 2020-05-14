@@ -108,7 +108,7 @@ public class Communicator extends Thread {
                 if (measurements.get(0).getWaarde() > temperaturePref * 1.10) {
                     tcpServer.write("uv");
                     System.out.println(tcpServer.read());
-                    verlichting = false;
+                    verwarming = false;
                 }
             } else if (measurements.get(0).getWaarde() < temperaturePref) {
                 tcpServer.write("sv");

@@ -26,6 +26,8 @@ public class MusicPane implements EventHandler<ActionEvent> {
     private Text tArtist;
     private Text tTitle;
 
+    private Text tRemainingTime;
+
     private MusicPlayer musicPlayer;
 
     public MusicPane() {
@@ -42,8 +44,10 @@ public class MusicPane implements EventHandler<ActionEvent> {
         tTitle = new Text("Title");
         tArtist = new Text("Artist");
 
+        tRemainingTime = new Text("-");
+
         leftBox = new VBox();
-        leftBox.getChildren().addAll(tTitle, tArtist);
+        leftBox.getChildren().addAll(tTitle, tArtist, tRemainingTime);
 
         borderPane.setLeft(leftBox);
 
@@ -52,7 +56,7 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
         borderPane.setCenter(centerBox);
 
-        musicPlayer = new MusicPlayer();
+        musicPlayer = new MusicPlayer(this);
 
         bPlay.setOnAction(this);
         bPrevious.setOnAction(this);
@@ -83,5 +87,10 @@ public class MusicPane implements EventHandler<ActionEvent> {
         } else if (actionEvent.getSource() == bNext) {
             musicPlayer.setMessage("Next song");
         }
+    }
+
+    public void setTime(int remainingTime) {
+        String time = String.valueOf(remainingTime);
+        tRemainingTime.setText(time);
     }
 }

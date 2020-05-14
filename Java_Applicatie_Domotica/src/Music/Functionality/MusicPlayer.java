@@ -1,6 +1,7 @@
 package Music.Functionality;
 
 import General.TCPServer;
+import Music.GUI.MusicPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 public class MusicPlayer extends Thread {
     private TCPServer tcpServer;
+    private MusicPane musicPane;
 
     private boolean running;
 
@@ -22,7 +24,8 @@ public class MusicPlayer extends Thread {
     private boolean newMessage;
     private String message;
 
-    public MusicPlayer() {
+    public MusicPlayer(MusicPane musicPane) {
+        this.musicPane = musicPane;
         running = true;
         newMessage = false;
         message = "unknown";
@@ -214,3 +217,4 @@ public class MusicPlayer extends Thread {
         this.message = message;
     }
 }
+

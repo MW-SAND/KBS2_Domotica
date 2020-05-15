@@ -4,6 +4,8 @@ import Music.Functionality.MusicPlayer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -11,6 +13,7 @@ import javafx.scene.text.Text;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MusicPane implements EventHandler<ActionEvent> {
     private Button bPlay;
@@ -21,12 +24,15 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
     private BorderPane borderPane;
     private VBox leftBox;
-    private HBox centerBox;
+    private VBox centerBox;
+    private HBox controls;
 
     private Text tArtist;
     private Text tTitle;
 
     private Text tRemainingTime;
+    private Text tTotalDuration;
+    private ProgressBar songProgress;
 
     private MusicPlayer musicPlayer;
 
@@ -45,14 +51,23 @@ public class MusicPane implements EventHandler<ActionEvent> {
         tArtist = new Text("Artist");
 
         tRemainingTime = new Text("-");
+        tTotalDuration = new Text("-");
 
         leftBox = new VBox();
-        leftBox.getChildren().addAll(tTitle, tArtist, tRemainingTime);
+        leftBox.getChildren().addAll(tTitle, tArtist, tTotalDuration, tRemainingTime);
 
         borderPane.setLeft(leftBox);
 
-        centerBox = new HBox();
-        centerBox.getChildren().addAll(bPrevious, bPause, bResume, bNext, bPlay);
+        songProgress = new ProgressBar();
+        songProgress.setProgress(0);
+
+        controls = new HBox();
+        controls.getChildren().addAll(bPrevious, bPause, bResume, bNext, bPlay);
+
+        songProgress.prefWidthProperty().bind(controls.widthProperty());
+
+        centerBox = new VBox();
+        centerBox.getChildren().addAll(controls, songProgress);
 
         borderPane.setCenter(centerBox);
 
@@ -89,8 +104,30 @@ public class MusicPane implements EventHandler<ActionEvent> {
         }
     }
 
-    public void setTime(int remainingTime) {
-        String time = String.valueOf(remainingTime);
-        tRemainingTime.setText(time);
+    public void setTime(int duration, int timePlaying) {
+        int remainingTime = duration - timePlaying;
+        int minutes;
+        String format = ":";
+
+        double progress = ((double) timePlaying) / ((double) duration);
+        songProgress.setProgress(progress);
+
+        if (remainingTime > 0) {
+            minutes = (int) TimeUnit.SECONDS.toMinutes(remainingTime);
+            remainingTime -= TimeUnit.MINUTES.toSeconds(minutes);
+            if (remainingTime < 10) format = ":0";
+            tRemainingTime.setText(minutes + format + remainingTime);
+        }
+
+        format = ":";
+        minutes = (int) TimeUnit.SECONDS.toMinutes(duration);
+        duration -= TimeUnit.MINUTES.toSeconds(minutes);
+        if (duration < 10) format = ":0";
+        tTotalDuration.setText(minutes + format + duration);
+    }
+
+    public void setSongInformation(String title, String artist)  {
+        tTitle.setText(title);
+        tArtist.setText(artist);
     }
 }

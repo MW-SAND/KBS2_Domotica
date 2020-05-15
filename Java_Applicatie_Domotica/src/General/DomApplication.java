@@ -35,7 +35,11 @@ public class DomApplication extends Application{
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                leftScreen.getCommunicator().terminate();
+                try {
+                    leftScreen.getCommunicator().terminate();
+                } catch(NullPointerException npe) {
+                    System.out.println(npe.getMessage());
+                }
                 Platform.exit();
                 System.exit(0);
             }

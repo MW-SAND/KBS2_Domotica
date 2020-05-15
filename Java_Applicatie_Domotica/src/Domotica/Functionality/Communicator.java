@@ -107,11 +107,13 @@ public class Communicator extends Thread {
             if (verwarming) {
                 if (measurements.get(0).getWaarde() > temperaturePref * 1.10) {
                     tcpServer.write("uv");
+                    Database.updateLog("Update extern systeem", "Verwarming uitgeschakeld", null);
                     System.out.println(tcpServer.read());
                     verwarming = false;
                 }
             } else if (measurements.get(0).getWaarde() < temperaturePref) {
                 tcpServer.write("sv");
+                Database.updateLog("Update extern systeem", "Verwarming ingeschakeld", null);
                 verwarming = true;
                 System.out.println(tcpServer.read());
             }
@@ -121,11 +123,13 @@ public class Communicator extends Thread {
             if (verlichting) {
                 if (measurements.get(3).getWaarde() > lightPref * 1.10) {
                     tcpServer.write("ul");
+                    Database.updateLog("Update extern systeem", "Verlichting uitgeschakeld", null);
                     System.out.println(tcpServer.read());
                     verlichting = false;
                 }
             } else if (measurements.get(3).getWaarde() < lightPref && measurements.get(3).getWaarde() != 0.0) {
                 tcpServer.write("sl");
+                Database.updateLog("Update extern systeem", "Verlichting ingeschakeld", null);
                 verlichting = true;
                 System.out.println(tcpServer.read());
             }

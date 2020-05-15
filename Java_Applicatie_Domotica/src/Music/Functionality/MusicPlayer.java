@@ -1,10 +1,8 @@
 package Music.Functionality;
 
+import General.Database;
 import General.TCPServer;
 import Music.GUI.MusicPane;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -42,10 +40,10 @@ public class MusicPlayer extends Thread {
         songIndex = 0;
         currentSong = 0;
 
-        Song song1 = new Song("Dwayne Tryumf", "777 intro", 96, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\777intro.mp3");
-        Song song2 = new Song("Dwayne Tryumf", "I don't pack a Matic", 249, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Matic.mp3");
-        Song song3 = new Song("Lecrae", "Don't Waste Your Life", 229, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Waste.mp3");
-        Song song4 = new Song("KB", "Champion", 269, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Champion.mp3");
+        Song song1 = new Song("Dwayne Tryumf", "777 intro", 96, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\777intro.mp3", null);
+        Song song2 = new Song("Dwayne Tryumf", "I don't pack a Matic", 249, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Matic.mp3", null);
+        Song song3 = new Song("Lecrae", "Don't Waste Your Life", 229, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Waste.mp3", null);
+        Song song4 = new Song("KB", "Champion", 269, "C:\\Users\\matti\\Downloads\\KBS_TestNummers\\Champion.mp3", null);
 
         playlist = new ArrayList<>();
         playlist.add(song1);
@@ -131,6 +129,8 @@ public class MusicPlayer extends Thread {
         playedSongs.add(playlist.get(songIndex));
         currentSong = playedSongs.size() - 1;
 
+        Database.updateLog("Muziekspeler", "Nieuw nummer", playedSongs.get(currentSong).getDatabaseID());
+
         try {
             sleep(2000);
         } catch (InterruptedException e) {
@@ -162,6 +162,8 @@ public class MusicPlayer extends Thread {
 
             sendMusicFile(playedSongs.get(currentSong+1));
         }
+
+        Database.updateLog("Muziekspeler", "Vorig nummer", playedSongs.get(currentSong).getDatabaseID());
     }
 
     public void nextSong() {
@@ -238,6 +240,8 @@ public class MusicPlayer extends Thread {
                 e.printStackTrace();
             }
         }
+
+        Database.updateLog("Muziekspeler", "Volgende nummer", playedSongs.get(currentSong).getDatabaseID());
     }
 
 
@@ -255,6 +259,7 @@ public class MusicPlayer extends Thread {
             System.out.println("Pausing song...");
             tcpServer.write("ps");
             tcpServer.read();
+            Database.updateLog("Muziekspeler", "Nummer gepauzeerd", playedSongs.get(currentSong).getDatabaseID());
             songPauseTime = (int) (System.nanoTime() / 1000000000);
             songPlaying = false;
         } catch (IOException e) {
@@ -267,6 +272,7 @@ public class MusicPlayer extends Thread {
             System.out.println("Resuming song...");
             tcpServer.write("rs");
             tcpServer.read();
+            Database.updateLog("Muziekspeler", "Nummer hervat", playedSongs.get(currentSong).getDatabaseID());
             songTotalPausedTime += ((int) (System.nanoTime() / 1000000000) - songPauseTime);
             songPlaying = true;
         } catch (IOException e) {

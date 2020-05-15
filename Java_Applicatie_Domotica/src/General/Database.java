@@ -78,6 +78,14 @@ public class Database {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+    }
 
+    public static void updateLog(String action, String beschrijving, Integer muzieknummer) {
+            String query = "INSERT INTO log (actie, beschrijving";
+            if (muzieknummer != null) query += ", muzieknummer_id";
+            query += ") VALUES (\"" + action + "\", \"" + beschrijving + "\"";
+            if (muzieknummer != null) query += ", " + muzieknummer;
+            query += ");";
+            executeUpdate(query);
     }
 }

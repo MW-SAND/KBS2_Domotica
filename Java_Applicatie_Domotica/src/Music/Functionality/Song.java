@@ -7,11 +7,13 @@ public class Song {
     private String title;
     private int playDuration;
     private byte[] songBytes;
+    private Integer databaseID;
 
-    public Song(String artist, String title, int playDuration, String path) {
+    public Song(String artist, String title, int playDuration, String path, Integer databaseID) {
         this.artist = artist;
         this.title = title;
         this.playDuration = playDuration;
+        this.databaseID = databaseID;
 
         try {
             File musicFile = new File(path);
@@ -40,5 +42,9 @@ public class Song {
 
     public byte[] getSongBytes() {
         return songBytes;
+    }
+
+    public Integer getDatabaseID() {
+        return databaseID;
     }
 }

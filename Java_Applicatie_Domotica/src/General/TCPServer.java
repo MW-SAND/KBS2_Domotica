@@ -50,7 +50,6 @@ public class TCPServer {
 
                 return message;
             }
-
             currentTime = System.nanoTime() / 1000000;
         }
         return null;

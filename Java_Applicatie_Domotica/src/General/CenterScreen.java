@@ -12,6 +12,7 @@ public class CenterScreen {
     private BorderPane centerPane;
     private GraphPane graphPane;
     private PreferencePane prefPane;
+    private LogPane logPane;
     private MusicPane musicPane;
 
     public CenterScreen(DomApplication domApplication) {
@@ -20,6 +21,7 @@ public class CenterScreen {
 
         graphPane = new GraphPane();
         prefPane = new PreferencePane(this, domApplication);
+        logPane = new LogPane();
 
         centerPane.setCenter(prefPane.getPane());
 
@@ -36,6 +38,8 @@ public class CenterScreen {
             centerPane.setCenter(prefPane.getPane());
         } else if (paneName.equals("Metingen")) {
             centerPane.setCenter(graphPane.getPane());
+        } else if (paneName.equals("Logging")) {
+            centerPane.setCenter(logPane.getPane());
         }
     }
 

@@ -61,7 +61,7 @@ public class GraphPane implements EventHandler<ActionEvent> {
     }
 
     public void newGraph(String grootheid) {
-        ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT waarde, grootheid, datum FROM metingen");
+        ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT waarde, grootheid, datum FROM metingen;");
         Graph graph = new Graph(result, grootheid);
         borderPane.setCenter(graph.getLineChart());
 

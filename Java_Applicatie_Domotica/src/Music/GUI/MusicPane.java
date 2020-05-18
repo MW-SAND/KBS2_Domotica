@@ -92,7 +92,6 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
         if (actionEvent.getSource() == bPlay) {
             musicPlayer.setMessage("New song");
-
         } else if (actionEvent.getSource() == bPrevious) {
             musicPlayer.setMessage("Previous song");
         } else if (actionEvent.getSource() == bPause) {

@@ -46,6 +46,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
     private Button showMetingen;
     private Button showPref;
     private Button logout;
+    private Button showLogging;
 
 
     public LeftScreen(DomApplication domApplication) {
@@ -141,6 +142,10 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         logout = new Button("uitloggen");
         logout.setOnAction(this);
         LeftPane.add(logout, 0, 13);
+
+        showLogging = new Button("Logging");
+        showLogging.setOnAction(this);
+        LeftPane.add(showLogging, 1, 13);
     }
 
     public GridPane getLeftPane() {
@@ -176,6 +181,8 @@ public class LeftScreen implements EventHandler<ActionEvent> {
             centerScreen.showPane("Voorkeuren");
         } else if (actionEvent.getSource() == showMetingen) {
             centerScreen.showPane("Metingen");
+        } else if (actionEvent.getSource() == showLogging) {
+            centerScreen.showPane("Logging");
         } else if (actionEvent.getSource() == logout) {
             communicator.terminate();
             Database.executeUpdate("UPDATE account SET active=0 WHERE id=" + Account.getAccountid() + ";");

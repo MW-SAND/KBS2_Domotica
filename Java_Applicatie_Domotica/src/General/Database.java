@@ -21,15 +21,17 @@ public class Database {
             final int columnCount = metaData.getColumnCount();
 
             while (resultSet.next()) {
-                try {
-                    ArrayList<String> row = new ArrayList<>();
-                    for (int i = 1; i <= columnCount; i++) {
+                ArrayList<String> row = new ArrayList<>();
+                boolean addedField = false;
+                for (int i = 1; i <= columnCount; i++) {
+                    try {
                         row.add(resultSet.getObject(i).toString());
+                        addedField = true;
+                    } catch (NullPointerException npe) {
+                        System.out.println(npe.getMessage());
                     }
-                    result.add(row);
-                } catch (NullPointerException npe) {
-                    System.out.println(npe.getMessage());
                 }
+                if (addedField) result.add(row);
             }
 
             resultSet.close();
@@ -47,7 +49,7 @@ public class Database {
 
         try {
             Connection conn = getConnection();
-            Statement statement =  conn.createStatement();
+            Statement statement = conn.createStatement();
             result = statement.executeUpdate(query);
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -81,11 +83,11 @@ public class Database {
     }
 
     public static void updateLog(String action, String beschrijving, Integer muzieknummer) {
-            String query = "INSERT INTO log (actie, beschrijving";
-            if (muzieknummer != null) query += ", muzieknummer_id";
-            query += ") VALUES (\"" + action + "\", \"" + beschrijving + "\"";
-            if (muzieknummer != null) query += ", " + muzieknummer;
-            query += ");";
-            executeUpdate(query);
+        String query = "INSERT INTO log (actie, beschrijving";
+        if (muzieknummer != null) query += ", muzieknummer_id";
+        query += ") VALUES (\"" + action + "\", \"" + beschrijving + "\"";
+        if (muzieknummer != null) query += ", " + muzieknummer;
+        query += ");";
+        executeUpdate(query);
     }
 }

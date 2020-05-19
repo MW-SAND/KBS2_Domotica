@@ -19,10 +19,12 @@ public class TCPServer {
         start(port);
     }
 
+    // start een serversocket op
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
 
         try {
+            // zoekt een clientsocket
             clientSocket = serverSocket.accept();
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -33,21 +35,22 @@ public class TCPServer {
         }
     }
 
+    // leest informatie op de socket
     public String read() throws IOException {
         long startTime = System.nanoTime() / 1000000;
         long currentTime = System.nanoTime() / 1000000;
 
+        // timeout als het meer dan 500 ms duurt
         while (currentTime - startTime < 500) {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String message = in.readLine();
 
+            // als het bericht niet null is wordt hij teruggestuurd
             if (message != null) {
-
                 if (message.equals("exit")) {
                     stop(true);
                     return null;
                 }
-
                 return message;
             }
             currentTime = System.nanoTime() / 1000000;
@@ -55,12 +58,13 @@ public class TCPServer {
         return null;
     }
 
+    // stuurt een bericht naar de client
     public void write(String message) {
-        System.out.println(message);
         out.println(message);
         out.flush();
     }
 
+    // haalt de meetgegevens op
     public void getMeasurements(ArrayList<Meting> measurements) throws IOException, NullPointerException {
         write("gt");
         measurements.get(0).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
@@ -72,6 +76,7 @@ public class TCPServer {
         measurements.get(2).setWaarde(Float.parseFloat(Objects.requireNonNull(read())));
     }
 
+    // sluit de connectie
     public void stop(boolean start) throws IOException, NullPointerException {
         if (in != null) in.close();
         if (out != null) out.close();

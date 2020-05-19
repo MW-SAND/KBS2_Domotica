@@ -41,12 +41,14 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
         borderPane.setPrefSize(1200, 200);
 
+        // knoppen voor controle over de muziek
         bPlay = new Button("Play");
         bResume = new Button("Resume");
         bPause = new Button("Pause");
         bNext = new Button("Next");
         bPrevious = new Button("Previous");
 
+        // muziekinformatie
         tTitle = new Text("Title");
         tArtist = new Text("Artist");
 
@@ -58,6 +60,7 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
         borderPane.setLeft(leftBox);
 
+        // toont muziekvoortgang met een progresbar
         songProgress = new ProgressBar();
         songProgress.setProgress(0);
 
@@ -71,6 +74,7 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
         borderPane.setCenter(centerBox);
 
+        // maakt een muziekspeler aan
         musicPlayer = new MusicPlayer(this);
 
         bPlay.setOnAction(this);
@@ -88,6 +92,7 @@ public class MusicPane implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent actionEvent) {
+        // verzend de knop opdracht naar de muziekspeler
         musicPlayer.setNewMessage(true);
 
         if (actionEvent.getSource() == bPlay) {
@@ -108,16 +113,19 @@ public class MusicPane implements EventHandler<ActionEvent> {
         int minutes;
         String format = ":";
 
+        // rekent progressie uit en toont deze
         double progress = ((double) timePlaying) / ((double) duration);
         songProgress.setProgress(progress);
 
         if (remainingTime > 0) {
+            // format de tijd naar minuut:secondes
             minutes = (int) TimeUnit.SECONDS.toMinutes(remainingTime);
             remainingTime -= TimeUnit.MINUTES.toSeconds(minutes);
             if (remainingTime < 10) format = ":0";
             tRemainingTime.setText(minutes + format + remainingTime);
         }
 
+        // format de tijd naar minuut:secondes
         format = ":";
         minutes = (int) TimeUnit.SECONDS.toMinutes(duration);
         duration -= TimeUnit.MINUTES.toSeconds(minutes);
@@ -125,6 +133,7 @@ public class MusicPane implements EventHandler<ActionEvent> {
         tTotalDuration.setText(minutes + format + duration);
     }
 
+    // past informatie over het nummer aan
     public void setSongInformation(String title, String artist)  {
         tTitle.setText(title);
         tArtist.setText(artist);

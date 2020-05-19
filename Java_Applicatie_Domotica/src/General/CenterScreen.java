@@ -1,12 +1,10 @@
 package General;
 
+import Domotica.GUI.LogPane;
 import Domotica.GUI.PreferencePane;
 import Domotica.GUI.GraphPane;
 import Music.GUI.MusicPane;
-import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 
 public class CenterScreen {
     private BorderPane centerPane;
@@ -19,6 +17,7 @@ public class CenterScreen {
         centerPane = new BorderPane();
         centerPane.setMinSize(1200, 800);
 
+        // maakt mogelijke schermen alvast aan
         graphPane = new GraphPane();
         prefPane = new PreferencePane(this, domApplication);
         logPane = new LogPane();
@@ -33,6 +32,7 @@ public class CenterScreen {
         return centerPane;
     }
 
+    // toont verschillende schermen afhankelijk van de knop
     public void showPane(String paneName) {
         if (paneName.equals("Voorkeuren")) {
             centerPane.setCenter(prefPane.getPane());

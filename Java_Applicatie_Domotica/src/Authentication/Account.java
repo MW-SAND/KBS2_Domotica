@@ -5,10 +5,16 @@ import General.Database;
 import java.util.ArrayList;
 
 public class Account {
+    //accountvariabelen
     private static int accountid;
     private static float lichtVK;
     private static float temperatureVK;
     private static String username;
+
+
+    public static void setIdentity(String username) {
+        Account.username = username;
+    }
 
     public static void setAccountid(int accountid) {
         Account.accountid = accountid;
@@ -26,9 +32,16 @@ public class Account {
         return temperatureVK;
     }
 
+    public static String getUsername() {
+        return username;
+    }
+
+    // voorkeuren aanpassen in de Database
     public static boolean updatePref(String field, float waarde) {
         String query = "UPDATE account SET " + field + "=" + waarde + " WHERE id=" + accountid + ";";
         int rows = Database.executeUpdate(query);
+
+        // aanpassing controleren en klassevariabele aanpassen
         if (rows == 1) {
             if (field.equals("lichtVK")) {
                 Account.lichtVK = waarde;
@@ -41,6 +54,7 @@ public class Account {
         return false;
     }
 
+    // voorkeur uit de database halen
     public static void getPref() {
         String query = "SELECT temperatuurVK, lichtVK FROM account WHERE id=" + accountid + ";";
         ArrayList<ArrayList<String>> result = Database.executeQuery(query);
@@ -53,13 +67,5 @@ public class Account {
         } catch (IndexOutOfBoundsException ioobe) {
             System.out.println(ioobe.getMessage());
         }
-    }
-
-    public static void setIdentity(String username) {
-        Account.username = username;
-    }
-
-    public static String getUsername() {
-        return username;
     }
 }

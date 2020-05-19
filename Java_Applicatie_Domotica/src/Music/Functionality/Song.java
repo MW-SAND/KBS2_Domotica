@@ -16,6 +16,7 @@ public class Song {
         this.databaseID = databaseID;
 
         try {
+            // zet bestand in path om naar een bytearray
             File musicFile = new File(path);
             songBytes = new byte[(int) musicFile.length()];
             FileInputStream fis = new FileInputStream(musicFile);

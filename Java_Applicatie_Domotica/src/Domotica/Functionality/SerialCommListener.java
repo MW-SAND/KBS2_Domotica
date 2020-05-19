@@ -1,6 +1,5 @@
 package Domotica.Functionality;
 
-import Domotica.Functionality.Communicator;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
@@ -22,6 +21,7 @@ public class SerialCommListener {
     public SerialCommListener(Communicator communicator) {
         this.communicator = communicator;
 
+        // maakt de connectie met de Arduino
         serialport = SerialPort.getCommPort("COM3");
         serialport.openPort();
         serialport.setBaudRate(9600);
@@ -30,6 +30,7 @@ public class SerialCommListener {
         inputStream = serialport.getInputStream();
         outputStream = serialport.getOutputStream();
 
+        // er wordt geluisterd naar binnenkomende berichten
         serialport.addDataListener(new SerialPortDataListener() {
             @Override
             public int getListeningEvents() {
@@ -58,6 +59,7 @@ public class SerialCommListener {
             e.printStackTrace();
         }
 
+        // er worden 5 bytes gelezen en de informatie wordt verwerkt
         byte[] newDataB = new byte[5];
         inputStream.read(newDataB, 0, 5);
 
@@ -65,11 +67,13 @@ public class SerialCommListener {
         communicator.setBrightness(newDataS);
     }
 
+    // zendt data naar Arduino
     public void writeData(String message) throws IOException {
         outputStream.write(message.getBytes());
         outputStream.flush();
     }
 
+    // sluit de poort
     public void closePort() throws IOException {
         serialport.closePort();
         outputStream.flush();

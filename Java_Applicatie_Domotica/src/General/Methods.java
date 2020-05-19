@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Methods {
+
+    // hashed strings
     public static String hasher(String string) throws NoSuchAlgorithmException {
         byte[] bytesPassword;
         MessageDigest md;

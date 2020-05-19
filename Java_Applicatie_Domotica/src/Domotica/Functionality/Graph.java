@@ -15,8 +15,7 @@ public class Graph {
     private XYChart.Series serie;
 
     public Graph(ArrayList<ArrayList<String>> data, String grootheid) {
-        int dataSize = data.size();
-
+        // initaliseren onderdelen grafiek
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         lineChart = new LineChart<>(xAxis, yAxis);
@@ -29,9 +28,11 @@ public class Graph {
 
         serie = new XYChart.Series();
 
+        // geeft minimale en maximale waarde van de datum
         long lowestDate = calcDate(grootheid, "MIN");
         long highestDate = calcDate(grootheid, "MAX");
 
+        // een stap is 10% van de x-as
         double step = (double) (highestDate - lowestDate) / (10*1000*60*60*24);
         int numberOfSteps = 1;
         double averageTotal = 0;
@@ -39,11 +40,15 @@ public class Graph {
         double dayTotal = 0;
 
         for (ArrayList<String> datum : data) {
+            // controleren of meting van het gewenste type is
             if (datum.get(1).equals(grootheid)) {
                 try {
                     double waarde = Double.parseDouble(datum.get(0));
                     double day = getDateValue(datum.get(2), lowestDate);
+
+                    // controleren of dag niet binnen de stap valt
                     if (day > (step * numberOfSteps)) {
+                        // toevoegen gemiddelde aan grafiek en resetten variabelen
                         double dayAverage = dayTotal / numberOfMeasurements;
                         double waardeAverage = averageTotal / numberOfMeasurements;
                         serie.getData().add(new XYChart.Data(dayAverage, waardeAverage));
@@ -53,6 +58,7 @@ public class Graph {
                         numberOfSteps++;
                     }
 
+                    // dagwaarden toevoegen aan totaal
                     dayTotal += day;
                     averageTotal += waarde;
                     numberOfMeasurements++;
@@ -74,9 +80,12 @@ public class Graph {
     public long calcDate(String grootheid, String operator) {
         long date = 0;
 
-        ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT " + operator + "(datum) FROM metingen WHERE grootheid = '" + grootheid + "';");
+        // datum uit de database halen
+        String query = "SELECT " + operator + "(datum) FROM metingen WHERE grootheid = '" + grootheid + "';";
+        ArrayList<ArrayList<String>> result = Database.executeQuery(query);
         String DateS = result.get(0).get(0);
         try {
+            // datumstring naar long
             Date DateD = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(DateS);
             date =DateD.getTime();
         } catch (ParseException e) {
@@ -86,6 +95,7 @@ public class Graph {
     }
 
     public double getDateValue(String stringDate, long lowestDate) throws ParseException {
+        // datumstring naar long
         Date dateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(stringDate);
         long longDate = dateDate.getTime();
 

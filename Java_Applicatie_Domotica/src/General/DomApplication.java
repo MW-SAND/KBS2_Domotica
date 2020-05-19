@@ -32,6 +32,7 @@ public class DomApplication extends Application{
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
+        // bepaalt wat er gebeurt als er afgesloten wordt
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
@@ -47,21 +48,24 @@ public class DomApplication extends Application{
 
         primaryStage.setTitle("Domotica Systeem");
 
+        // login en registratieschermen maken
         buildLogin();
         buildRegistration();
 
+        // controleert of er al iemand is ingelogd
         boolean activeUser = checkActiveUsers();
-
         if (activeUser) openApplication();
         else showLogin();
     }
 
+    // opent de applicatie
     public void openApplication() {
         primaryStage.hide();
         primaryStage.setTitle("Domotica Systeem: " + Account.getUsername());
 
         BorderPane layout = new BorderPane();
 
+        // maakt de schermen aan
         leftScreen = new LeftScreen(this);
         layout.setLeft(leftScreen.getLeftPane());
 
@@ -70,12 +74,14 @@ public class DomApplication extends Application{
 
         leftScreen.setCenterScreen(centerScreen);
 
+        // maakt scene aan
         Scene defaultScene = new Scene(layout, 1500, 800);
         primaryStage.setScene(defaultScene);
 
         primaryStage.show();
     }
 
+    // toont het registratiescherm
     public void showRegistration() {
         try {
             primaryStage.hide();
@@ -86,6 +92,7 @@ public class DomApplication extends Application{
         }
     }
 
+    // toont het inlogscherm
     public void showLogin() {
         try {
             primaryStage.hide();
@@ -98,6 +105,7 @@ public class DomApplication extends Application{
 
     public void buildRegistration() {
         try {
+            // registratiescherm wordt gebouwd en de controller wordt gekoppeld aan het hoofdscherm
             loader = new FXMLLoader(getClass().getResource("../Authentication/Registration.fxml"));
             Parent registrationScreen = loader.load();
             registrationController = loader.getController();
@@ -110,6 +118,7 @@ public class DomApplication extends Application{
 
     public void buildLogin() {
         try {
+            // loginscherm wordt gebouwd en de controller wordt gekoppeld aan het hoofdscherm
             loader = new FXMLLoader(getClass().getResource("../Authentication/Login.fxml"));
             Parent loginScreen = loader.load();
             inlogController = loader.getController();
@@ -125,11 +134,13 @@ public class DomApplication extends Application{
     }
 
     public boolean checkActiveUsers() {
+        // controleert of er al een gebruiker ingelogd is
         ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT id, gebruikersnaam FROM account WHERE active=1");
 
         try {
             Account.setAccountid(Integer.valueOf(result.get(0).get(0)));
             Account.setIdentity(result.get(0).get(1));
+            Account.getPref();
             return true;
         } catch (IndexOutOfBoundsException ioobe) {
             return false;

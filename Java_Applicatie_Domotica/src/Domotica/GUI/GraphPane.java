@@ -30,12 +30,15 @@ public class GraphPane implements EventHandler<ActionEvent> {
         newGraph("temperature");
     }
 
+    // maakt een menu aan voor de pane
     public void createMenu() {
+        // voegt titel toe
         menu = new HBox();
 
         Button returnButton = new Button("<");
         Text titel = new Text("Metingen");
 
+        // maakt een toggleknop aan voor de verschillende grootheden
         ToggleGroup grootheden = new ToggleGroup();
 
         temperatuur = new ToggleButton("Temperatuur");
@@ -48,6 +51,7 @@ public class GraphPane implements EventHandler<ActionEvent> {
         luchtdruk.setToggleGroup(grootheden);
         helderheid.setToggleGroup(grootheden);
 
+        // selecteert temperatuur bij default
         temperatuur.setSelected(true);
 
         temperatuur.setOnAction(this);
@@ -55,12 +59,14 @@ public class GraphPane implements EventHandler<ActionEvent> {
         luchtdruk.setOnAction(this);
         helderheid.setOnAction(this);
 
+        // voegt de elementen toe aan het menu
         ObservableList lijst = menu.getChildren();
         lijst.addAll(returnButton, titel, temperatuur, luchtvochtigheid, luchtdruk, helderheid);
 
     }
 
     public void newGraph(String grootheid) {
+        // grafiek maken en tonen
         ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT waarde, grootheid, datum FROM metingen;");
         Graph graph = new Graph(result, grootheid);
         borderPane.setCenter(graph.getLineChart());

@@ -1,10 +1,11 @@
-package General;
+package Domotica.GUI;
+import Domotica.Functionality.LogLine;
+import General.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +26,7 @@ public class LogPane implements EventHandler<ActionEvent> {
     private ObservableList<LogLine> data;
 
     public LogPane() {
+        // toont menu aan de bovenkant
         borderPane = new BorderPane();
         topBar = new HBox();
         tTitle = new Text("Logging");
@@ -34,9 +36,11 @@ public class LogPane implements EventHandler<ActionEvent> {
 
         borderPane.setTop(topBar);
 
+        // maakt een tabel aan
         table = new TableView();
-        table.setEditable(true);
+        table.setEditable(false);
 
+        // maakt de kolommen aan en voegt de waarde van de cel toe
         TableColumn tcAction = new TableColumn("Actie");
         tcAction.setCellValueFactory(new PropertyValueFactory<LogLine, String>("action"));
 
@@ -49,19 +53,24 @@ public class LogPane implements EventHandler<ActionEvent> {
         TableColumn tcSong = new TableColumn("Nummer");
         tcSong.setCellValueFactory(new PropertyValueFactory<LogLine, String>("songInfo"));
 
+        // voegt de kolommen en de rijen toe
         fillTableRows();
         table.getColumns().addAll(tcAction, tcDescription, tcDate, tcSong);
         borderPane.setCenter(table);
     }
 
     private void fillTableRows() {
+        // haalt de logging op uit de database
         ArrayList<LogLine> loggingData = new ArrayList<>();
         String query = "SELECT actie, beschrijving, datum, naam, artist FROM log LEFT JOIN muzieknummer mn ON mn.id = muzieknummer_id;";
         ArrayList<ArrayList<String>> result = Database.executeQuery(query);
 
+        // verwerkt de logging in een nieuwe array
         for(ArrayList<String> resultLine : result) {
+            // als er geen muzieknummer van toepassing is blijft deze op - staan
             String muziekInfo = "-";
             try {
+                // voegt info over de muziek samen
                 muziekInfo = resultLine.get(3) + " - " + resultLine.get(4);
             } catch (IndexOutOfBoundsException ioobe) {
                 System.out.println(ioobe.getMessage());
@@ -69,6 +78,7 @@ public class LogPane implements EventHandler<ActionEvent> {
           loggingData.add(new LogLine(resultLine.get(0), resultLine.get(1), resultLine.get(2), muziekInfo));
         }
 
+        // maakt een observableList aan voor de tabel
         data = FXCollections.observableList(loggingData);
         table.setItems(data);
     }

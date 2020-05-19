@@ -1,4 +1,4 @@
-package General;
+package Domotica.Functionality;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +24,7 @@ public class LogLine {
         }
     }
 
+    // getters worden automatisch gebruikt door de tabel in LogPane
     public String getAction() {
         return action;
     }

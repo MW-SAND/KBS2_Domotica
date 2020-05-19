@@ -46,6 +46,7 @@ public class PreferencePane implements EventHandler<ActionEvent> {
         borderPane.setCenter(body);
     }
 
+    // maakt een menu aan
     public void createMenu() {
         menu = new HBox();
 
@@ -69,15 +70,18 @@ public class PreferencePane implements EventHandler<ActionEvent> {
         tempLabel = new Text("Temperatuur:");
         brightLabel = new Text("Helderheid:");
 
+        // toont huidige voorkeur
         currentTemp = new Text(String.valueOf(Account.getTemperatureVK()));
         currentBright = new Text(String.valueOf(Account.getLichtVK()));
 
+        // tekstvelden voor nieuwe voorkeur
         newTemp = new TextField();
         newBright = new TextField();
 
         body.addRow(1, tempLabel, currentTemp, newTemp);
         body.addRow(2, brightLabel, currentBright, newBright);
 
+        // voegt uitleg toe
         explanation = new Text("Voer de temperatuur of helderheid in waarbij u wilt dat de verwarming of verlichting wordt ingeschakeld");
         body.add(explanation, 0, 3);
     }
@@ -91,19 +95,23 @@ public class PreferencePane implements EventHandler<ActionEvent> {
         if (actionEvent.getSource() == saveButton) {
             boolean geupdate = false;
             try {
+                // haalt nieuwe waarden op
                 String newTempText = newTemp.getText();
                 String newBrightText = newBright.getText();
 
+                // past temperatuur aan als deze niet leeg is
                 if (!(newTempText.equals(""))) {
                     float newTempDouble = Float.valueOf(newTempText);
                     geupdate = Account.updatePref("temperatuurVK", newTempDouble);
                 }
 
+                // past helderheid aan als deze niet leeg is
                 if (!(newBrightText.equals(""))) {
                     float newBrightDouble = Float.valueOf(newBrightText);
                     geupdate = Account.updatePref("lichtVK", newBrightDouble);
                 }
 
+                // toont of de wijziging is geslaagd
                 if (geupdate) {
                     notification.setText("Wijziging is geslaagd!");
                     domApplication.getLeftScreen().showPreference();

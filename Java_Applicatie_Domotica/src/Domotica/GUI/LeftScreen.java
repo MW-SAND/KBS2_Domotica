@@ -1,9 +1,9 @@
 package Domotica.GUI;
 
 import Domotica.Functionality.Communicator;
+import Domotica.Functionality.Meting;
 import General.CenterScreen;
 import General.Database;
-import Domotica.Functionality.Meting;
 import Authentication.Account;
 import General.DomApplication;
 import javafx.event.ActionEvent;
@@ -52,9 +52,6 @@ public class LeftScreen implements EventHandler<ActionEvent> {
     public LeftScreen(DomApplication domApplication) {
         this.domApplication = domApplication;
 
-        communicator = new Communicator(this);
-        communicator.start();
-
         LeftPane = new GridPane();
         LeftPane.setMinSize(300, 800);
         LeftPane.setPadding(new Insets(10, 10, 10, 10));
@@ -62,15 +59,22 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         LeftPane.setVgap(5);
         LeftPane.setHgap(5);
 
+        // alle elementen toevoegen
         addTiles();
+
+        // communicator met de Arduino en RPi
+        communicator = new Communicator(this);
+        communicator.start();
     }
 
+    // toont de huidige metingen op het scherm
     public void showMeasurements(ArrayList<Meting> measurements) {
         String[] measurementString = new String[4];
         for (int i = 0; i < 4; i++) {
             measurementString[i] = String.valueOf(measurements.get(i).getWaarde());
         }
         try {
+            // metingen wordt getoond en ingekort zodat ze net op het scherm worden getoond
             tfTemperatureMeasurement.setText(measurementString[0].substring(0, 4) + "   °C");
             tfHumidityMeasurement.setText(measurementString[1].substring(0, 4) + "   g/m3");
             tfPressureMeasurement.setText(measurementString[2].substring(0, 6) + "   Pa");
@@ -80,7 +84,9 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         }
     }
 
+    // voegt alle knoppen en tekstvelden toe aan het scherm
     private void addTiles() {
+        // toont per systeem of deze aan of uit staat
         tfSystemTitle = new Text("Systeem");
         tfHeaterTitle = new Text("Verwarming");
         tfLightingTitle = new Text("Verlichting");
@@ -94,11 +100,10 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         LeftPane.add(tfLightingTitle, 0, 2);
         LeftPane.add(tfLightingStatus, 1, 2);
 
+        // toont de voorkeuren van de gebruiker
         tfPreferenceTitle = new Text("Voorkeuren");
         tfTemperaturePreferenceTitle = new Text("Temperatuur");
         tfLightPreferenceTitle = new Text("Licht");
-
-        Account.getPref();
 
         tfTemperaturePreferenceSize = new Text(String.valueOf(Account.getTemperatureVK()));
         tfLightPreferenceSize = new Text(String.valueOf(Account.getLichtVK()));
@@ -109,6 +114,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         LeftPane.add(tfLightPreferenceTitle, 0, 6);
         LeftPane.add(tfLightPreferenceSize, 1, 6);
 
+        // toont de huidige meetgegevens
         tfMeasurementTitle = new Text("Meetgegevens");
         tfTemperatureTitle = new Text("Temperatuur");
         tfHumidityTitle = new Text("Luchtvochtigheid");
@@ -130,6 +136,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         LeftPane.add(tfLightTitle, 0, 12);
         LeftPane.add(tfLightMeasurement, 1, 12);
 
+        // knoppen voor tonen van de metingen en het aanpassen van de voorkeur
         showMetingen = new Button("Metingen");
         showPref = new Button("Voorkeur");
 
@@ -139,6 +146,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         LeftPane.add(showMetingen, 1, 8);
         LeftPane.add(showPref, 1, 4);
 
+        // knoppen voor uitloggen en tonen van de logging
         logout = new Button("uitloggen");
         logout.setOnAction(this);
         LeftPane.add(logout, 0, 13);
@@ -156,6 +164,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         this.centerScreen = centerScreen;
     }
 
+    // toont of de verwarming en verlichting aanstaat
     public void showSystemStatus(boolean heater, boolean light) {
         if (heater) {
             tfHeaterStatus.setText("Aan");
@@ -170,6 +179,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         }
     }
 
+    // toont de voorkeur van de gebruiker
     public void showPreference() {
         tfTemperaturePreferenceSize.setText(String.valueOf(Account.getTemperatureVK()));
         tfLightPreferenceSize.setText(String.valueOf(Account.getLichtVK()));
@@ -184,6 +194,7 @@ public class LeftScreen implements EventHandler<ActionEvent> {
         } else if (actionEvent.getSource() == showLogging) {
             centerScreen.showPane("Logging");
         } else if (actionEvent.getSource() == logout) {
+            // beeindigd alle processen en toont log in.
             communicator.terminate();
             Database.executeUpdate("UPDATE account SET active=0 WHERE id=" + Account.getAccountid() + ";");
             domApplication.showLogin();

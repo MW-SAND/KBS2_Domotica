@@ -10,11 +10,16 @@ import java.util.ArrayList;
 
 public class Communicator extends Thread {
     private LeftScreen screen;
+
     private TCPServer tcpServer;
-    private ArrayList<Meting> measurements;
     private SerialCommListener serialComm;
+
+    private ArrayList<Meting> measurements;
+
+    // variabele houdt bij of het systeem aanstaat
     private boolean verlichting;
     private boolean verwarming;
+
     private boolean running;
 
     public Communicator(LeftScreen screen) {
@@ -31,6 +36,7 @@ public class Communicator extends Thread {
     }
 
     public void run() {
+        // aanmaken verbinding met RPi en Arduino
         try {
             tcpServer = new TCPServer(6369);
         } catch (IOException e) {
@@ -40,14 +46,16 @@ public class Communicator extends Thread {
         serialComm = new SerialCommListener(this);
 
         while (running) {
+            // ophalen en tonen nieuwe metingen
             updateMeasurements();
-
             screen.showMeasurements(measurements);
 
+            // opslaan metingen
             String query = buildQuery();
             System.out.println(Database.executeUpdate(query));
 
             try {
+                // metingen vergelijken met voorkeur
                 controlThreshold();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -63,6 +71,7 @@ public class Communicator extends Thread {
     }
 
     public void updateMeasurements() {
+        // versturen vraag voor metingen. Bij de RPi wordt er op antwoord gewacht.
         try {
             serialComm.writeData("gb");
             tcpServer.getMeasurements(measurements);
@@ -76,10 +85,6 @@ public class Communicator extends Thread {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public void setBrightness(String brightness) {
-        measurements.get(3).setWaarde(Float.parseFloat(brightness));
     }
 
     public String buildQuery() {
@@ -105,33 +110,46 @@ public class Communicator extends Thread {
 
         if (temperaturePref != 0.0) {
             if (verwarming) {
+                // zet verwarming uit als de temperatuur 110% van de voorkeur komt.
                 if (measurements.get(0).getWaarde() > temperaturePref * 1.10) {
                     tcpServer.write("uv");
-                    Database.updateLog("Update extern systeem", "Verwarming uitgeschakeld", null);
                     System.out.println(tcpServer.read());
                     verwarming = false;
+
+                    // update het log
+                    Database.updateLog("Update extern systeem", "Verwarming uitgeschakeld", null);
                 }
+                // zet de verwarming aan als de temperatuur onder de voorkeur komt.
             } else if (measurements.get(0).getWaarde() < temperaturePref) {
                 tcpServer.write("sv");
-                Database.updateLog("Update extern systeem", "Verwarming ingeschakeld", null);
-                verwarming = true;
                 System.out.println(tcpServer.read());
+                verwarming = true;
+
+                // update het log
+                Database.updateLog("Update extern systeem", "Verwarming ingeschakeld", null);
             }
         }
 
         if (lightPref != 0.0) {
             if (verlichting) {
+                // zet verlichting uit als de helderheid 110% van de voorkeur komt.
                 if (measurements.get(3).getWaarde() > lightPref * 1.10) {
                     tcpServer.write("ul");
-                    Database.updateLog("Update extern systeem", "Verlichting uitgeschakeld", null);
                     System.out.println(tcpServer.read());
                     verlichting = false;
+
+                    // update het log
+                    Database.updateLog("Update extern systeem", "Verlichting uitgeschakeld", null);
                 }
+                // zet verwarming aan als de helderheid onder de voorkeur komt.
             } else if (measurements.get(3).getWaarde() < lightPref && measurements.get(3).getWaarde() != 0.0) {
                 tcpServer.write("sl");
-                Database.updateLog("Update extern systeem", "Verlichting ingeschakeld", null);
-                verlichting = true;
                 System.out.println(tcpServer.read());
+                verlichting = true;
+
+                // update het log
+                Database.updateLog("Update extern systeem", "Verlichting ingeschakeld", null);
+
             }
         }
 
@@ -139,6 +157,7 @@ public class Communicator extends Thread {
     }
 
     public void closeConnections() {
+        // sluit de verbindingen
         try {
             if (tcpServer != null) tcpServer.stop(false);
             if (serialComm != null) serialComm.closePort();
@@ -148,6 +167,7 @@ public class Communicator extends Thread {
     }
 
     public void terminate() {
+        // stopt het proces
         running = false;
 
         try {
@@ -156,5 +176,9 @@ public class Communicator extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setBrightness(String brightness) {
+        measurements.get(3).setWaarde(Float.parseFloat(brightness));
     }
 }

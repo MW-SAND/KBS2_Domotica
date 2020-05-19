@@ -24,6 +24,7 @@ public class RegistrationController {
     }
 
     public void register() {
+        // controleert of de gebruikersnaam al bestaat
         if(checkUserName(tfUserName.getText())) {
             return;
         }
@@ -32,9 +33,14 @@ public class RegistrationController {
         String userName = tfUserName.getText();
 
         try {
+            // wachtwoord hashen
             password = Methods.hasher(password.trim());
-            int resultaat = Database.executeUpdate("INSERT INTO account (gebruikersnaam, wachtwoord) VALUES ('" + userName + "', '" + password + "');");
 
+            // gebruiker toevoegen
+            String query = "INSERT INTO account (gebruikersnaam, wachtwoord) VALUES ('" + userName + "', '" + password + "');";
+            int resultaat = Database.executeUpdate(query);
+
+            // als het toevoegen geslaagd is verschijnt het inlogscherm
             if (resultaat == 1) {
                 domApplication.showLogin();
             } else {
@@ -46,8 +52,10 @@ public class RegistrationController {
 
     }
 
+    // controleert of de gebruikersnaam al bekend is
     public boolean checkUserName(String userName) {
-        ArrayList<ArrayList<String>> result = Database.executeQuery("SELECT gebruikersnaam FROM account WHERE gebruikersnaam = '" + userName + "';");
+        String query = "SELECT gebruikersnaam FROM account WHERE gebruikersnaam = '" + userName + "';";
+        ArrayList<ArrayList<String>> result = Database.executeQuery(query);
 
         if(result.size() > 0) {
             return true;

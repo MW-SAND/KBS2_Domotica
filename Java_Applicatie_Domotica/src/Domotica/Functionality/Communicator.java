@@ -73,7 +73,7 @@ public class Communicator extends Thread {
     public void updateMeasurements() {
         // versturen vraag voor metingen. Bij de RPi wordt er op antwoord gewacht.
         try {
-            serialComm.writeData("gb");
+            serialComm.writeData("g");
             tcpServer.getMeasurements(measurements);
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,6 +113,7 @@ public class Communicator extends Thread {
                 // zet verwarming uit als de temperatuur 110% van de voorkeur komt.
                 if (measurements.get(0).getWaarde() > temperaturePref * 1.10) {
                     tcpServer.write("uv");
+                    serialComm.writeData("h");
                     System.out.println(tcpServer.read());
                     verwarming = false;
 
@@ -122,6 +123,7 @@ public class Communicator extends Thread {
                 // zet de verwarming aan als de temperatuur onder de voorkeur komt.
             } else if (measurements.get(0).getWaarde() < temperaturePref) {
                 tcpServer.write("sv");
+                serialComm.writeData("h");
                 System.out.println(tcpServer.read());
                 verwarming = true;
 
@@ -135,6 +137,7 @@ public class Communicator extends Thread {
                 // zet verlichting uit als de helderheid 110% van de voorkeur komt.
                 if (measurements.get(3).getWaarde() > lightPref * 1.10) {
                     tcpServer.write("ul");
+                    serialComm.writeData("l");
                     System.out.println(tcpServer.read());
                     verlichting = false;
 
@@ -144,6 +147,7 @@ public class Communicator extends Thread {
                 // zet verwarming aan als de helderheid onder de voorkeur komt.
             } else if (measurements.get(3).getWaarde() < lightPref && measurements.get(3).getWaarde() != 0.0) {
                 tcpServer.write("sl");
+                serialComm.writeData("l");
                 System.out.println(tcpServer.read());
                 verlichting = true;
 
@@ -179,6 +183,10 @@ public class Communicator extends Thread {
     }
 
     public void setBrightness(String brightness) {
-        measurements.get(3).setWaarde(Float.parseFloat(brightness));
+        try {
+            measurements.get(3).setWaarde(Float.parseFloat(brightness));
+        } catch (NumberFormatException nfe) {
+            System.out.println(nfe.getMessage());
+        }
     }
 }
